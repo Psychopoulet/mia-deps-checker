@@ -151,6 +151,50 @@
 					}
 				}
 			}
+		},
+
+		"/mia-deps-checker/api/repositories/{user}": {
+			"get": {
+				"description": "",
+				"summary": "Get all repositories by user",
+				"operationId": "getRepositoriesByUser",
+				"parameters": [
+					{
+						"name": "user",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Repositories",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"description": "List of repositories",
+									"items": {
+										"$ref": "#/components/schemas/Repository"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"components": {

@@ -30,10 +30,11 @@
     "clean-front": "npx rimraf ./public/cjs",
     "clean": "npm run clean-back && npm run clean-front",
 
+    "transpile-openapi-github": "npx openapi-typescript ./lib/src/types/github.json -o ./lib/src/types/github.ts",
     "transpile-openapi-back": "npx openapi-typescript ./lib/data/Descriptor.json -o ./lib/src/Descriptor.ts",
     "transpile-openapi-front": "npx openapi-typescript ./lib/data/Descriptor.json -o ./public/src/Descriptor.ts",
 
-    "build-back": "npm run clean-back && npm run transpile-openapi-back && npx tsc --project ./tsconfig.json",
+    "build-back": "npm run clean-back && npm run transpile-openapi-back && npm run transpile-openapi-github && npx tsc --project ./tsconfig.json",
     "build-front": "npm run clean-front && npm run transpile-openapi-front && npx webpack --config ./webpack.config.js",
     "build": "npm run build-back && npm run build-front",
 
@@ -74,9 +75,9 @@
     "node-containerpattern": "1.11.0",
     "nyc": "18.0.0",
     "openapi-typescript": "7.13.0",
-    "react": "19.2.5",
+    "react": "19.2.6",
     "react-bootstrap-fontawesome": "git+ssh://git@github.com/Psychopoulet/react-bootstrap-fontawesome",
-    "react-dom": "19.2.5",
+    "react-dom": "19.2.6",
     "rimraf": "6.1.3",
     "terser-webpack-plugin": "5.5.0",
     "ts-loader": "9.5.7",

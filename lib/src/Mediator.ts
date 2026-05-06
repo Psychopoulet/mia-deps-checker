@@ -80,38 +80,31 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
     // api
 
-    public getRepositoriesByUser (user: string): Promise<Array<components["schemas"]["Repository"]>> {
+    public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
-        return getRepositoriesByUser(user).then((content: Array<Record<string, unknown>>): Array<components["schemas"]["Repository"]> => {
+        return getRepositoriesByUser(urlParams.path.user).then((content): Array<components["schemas"]["Repository"]> => {
 
-            return content.filter((rep: Record<string, unknown>): boolean => {
-
-                return !(rep.archived as boolean)
-                    && (
-                        0 < (rep.open_issues_count as number)
-                        || 0 < (rep.open_issues as number)
-                        || 0 < (rep.watchers_count as number)
-                    );
-
-            }).map((rep) => {
+            return content.filter((rep): boolean => {
+                return !(rep.archived ?? false);
+            }).map((rep): components["schemas"]["Repository"] => {
 
                 return {
-                    "name": rep.name as string,
-                    "full_name": rep.full_name as string,
-                    "html_url": rep.html_url as string,
+                    "name": rep.name,
+                    "full_name": rep.full_name,
+                    "html_url": rep.html_url,
                     "raw_package":
                         "https://raw.githubusercontent.com/Psychopoulet/"
-                        + (rep.name as string)
+                        + rep.name
                         + "/refs/heads/"
-                        + (rep.default_branch as string)
+                        + (rep.default_branch ?? "main")
                         + "/package.json",
-                    "archived": rep.archived as boolean,
-                    "disabled": rep.disabled as boolean,
-                    "language": rep.language as string,
-                    "watchers_count": rep.watchers_count as number,
-                    "open_issues": rep.open_issues as number,
-                    "open_issues_count": rep.open_issues_count as number,
-                    "watchers": rep.watchers as number
+                    "archived": rep.archived ?? false,
+                    "disabled": rep.disabled ?? false,
+                    "language": rep.language ?? "unknown",
+                    "watchers_count": rep.watchers_count ?? 0,
+                    "open_issues": rep.open_issues ?? 0,
+                    "open_issues_count": rep.open_issues_count ?? 0,
+                    "watchers": rep.watchers ?? 0
                 };
 
             });

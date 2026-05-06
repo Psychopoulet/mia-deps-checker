@@ -8,9 +8,12 @@
     // natives
     import type { IncomingMessage } from "node:http";
 
+    // locals
+    import type { components } from "../types/github";
+
 // module
 
-export default function getRepositoriesByUser (user: string): Promise<Array<Record<string, unknown>>> {
+export default function getRepositoriesByUser (user: string): Promise<components["schemas"]["GetRepositoriesByUser"]> {
 
     return new Promise((resolve: (result: string) => void, reject: (error: Error) => void): void => {
 
@@ -44,8 +47,8 @@ export default function getRepositoriesByUser (user: string): Promise<Array<Reco
 
         );
 
-    }).then((content: string): Array<Record<string, unknown>> => {
-        return JSON.parse(content) as Array<Record<string, unknown>>;
+    }).then((content: string): components["schemas"]["GetRepositoriesByUser"] => {
+        return JSON.parse(content) as components["schemas"]["GetRepositoriesByUser"];
     });
 
 }
