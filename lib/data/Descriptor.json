@@ -1,0 +1,221 @@
+{
+	"openapi": "3.0.2",
+	"info": {
+		"title": "mia-deps-checker",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/mia-deps-checker/descriptor": {
+			"get": {
+				"description": "",
+				"summary": "Plugin's descriptor",
+				"operationId": "getDescriptor",
+				"responses": {
+					"200": {
+						"description": "Plugin's descriptor",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/status": {
+			"get": {
+				"description": "",
+				"summary": "Plugin's status",
+				"operationId": "getStatus",
+				"responses": {
+					"200": {
+						"description": "Plugin's status",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"enum": [ "ENABLED", "INITIALIZED" ]
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/mia-deps-checker/public/index.html": {
+			"get": {
+				"description": "",
+				"summary": "Plugin's front",
+				"operationId": "getFrontIndex",
+				"responses": {
+					"200": {
+						"description": "Plugin's front",
+						"content": {
+							"text/html": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/public/bundle.min.js": {
+			"get": {
+				"description": "",
+				"summary": "Plugin's front app",
+				"operationId": "getFrontApp",
+				"responses": {
+					"200": {
+						"description": "Plugin's front app",
+						"content": {
+							"application/javascript": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/public/bundle.min.js.map": {
+			"get": {
+				"description": "",
+				"summary": "Plugin's front app map",
+				"operationId": "getFrontAppMap",
+				"responses": {
+					"200": {
+						"description": "Plugin's front app",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"PluginName": {
+				"type": "string"
+			},
+			"Error": {
+				"type": "object",
+				"description": "JSON Error description",
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [ "code", "message" ]
+			},
+			"Repository": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"full_name": {
+						"type": "string"
+					},
+					"html_url": {
+						"type": "string"
+					},
+					"raw_package": {
+						"type": "string"
+					},
+					"archived": {
+						"type": "boolean"
+					},
+					"disabled": {
+						"type": "boolean"
+					},
+					"language": {
+						"type": "string"
+					},
+					"watchers_count": {
+						"type": "number"
+					},
+					"open_issues": {
+						"type": "number"
+					},
+					"open_issues_count": {
+						"type": "number"
+					},
+					"watchers": {
+						"type": "number"
+					}
+				},
+				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count", "watchers" ]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:8000/",
+			"description": "test server"
+		}
+	]
+}
