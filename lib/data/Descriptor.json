@@ -195,6 +195,52 @@
 					}
 				}
 			}
+		},
+		"/mia-deps-checker/api/analyze": {
+			"post": {
+				"description": "",
+				"summary": "Analyze a package's dependencies",
+				"operationId": "analyzePackage",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"description": "Package URL",
+								"properties": {
+									"package_url": {
+										"type": "string"
+									}
+								},
+								"required": [ "package_url" ]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Analyze result",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Analyze"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occured",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"components": {
@@ -227,7 +273,7 @@
 					"html_url": {
 						"type": "string"
 					},
-					"raw_package": {
+					"package_url": {
 						"type": "string"
 					},
 					"archived": {
@@ -253,6 +299,15 @@
 					}
 				},
 				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count", "watchers" ]
+			},
+			"Analyze": {
+				"type": "object",
+				"properties": {
+					"result": {
+						"type": "boolean"
+					}
+				},
+				"required": [ "result" ]
 			}
 		}
 	},

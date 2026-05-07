@@ -9,6 +9,7 @@
 
     // locals
     import getRepositoriesByUser from "./utils/getRepositoriesByUser";
+    import analyzePackage from "./utils/analyzePackage";
 
 // types & interfaces
 
@@ -92,7 +93,7 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
                     "name": rep.name,
                     "full_name": rep.full_name,
                     "html_url": rep.html_url,
-                    "raw_package":
+                    "package_url":
                         "https://raw.githubusercontent.com/Psychopoulet/"
                         + rep.name
                         + "/refs/heads/"
@@ -109,6 +110,15 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
             });
 
+        });
+
+    }
+
+    public analyzePackage (urlParams: operations["analyzePackage"]["parameters"], bodyParams: operations["analyzePackage"]["requestBody"]["content"]["application/json"]): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
+
+        return analyzePackage(bodyParams.package_url, join(__dirname, "tmp-package.json")).then((content) => {
+            console.log(content);
+            return content;
         });
 
     }
