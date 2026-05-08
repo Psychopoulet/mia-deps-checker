@@ -2,7 +2,6 @@
 
     // natives
     import { get } from "node:https";
-    import { writeFile, unlink } from "node:fs/promises";
 
     // externals
     import checkVersionModules from "check-version-modules";
@@ -19,7 +18,7 @@
 
 // module
 
-export default function analyzePackage (packageUrl: string, packageFile: string): Promise<iAnalyzePackage> {
+export default function analyzePackage (packageUrl: string): Promise<iAnalyzePackage> {
 
     return new Promise((resolve: (result: string) => void, reject: (error: Error) => void): void => {
 
@@ -44,21 +43,13 @@ export default function analyzePackage (packageUrl: string, packageFile: string)
 
         });
 
-    }).then((packageContent: string): Promise<iAnalyzePackage> => {
+    }).then((content: string): Record<string, object | string | number | boolean> => {
+        return JSON.parse(content) as Record<string, object | string | number | boolean>;
+    }).then((packageContent: Record<string, object | string | number | boolean>): Promise<iAnalyzePackage> => {
 
-        return writeFile(packageFile, packageContent, "utf-8").then((): Promise<iAnalyzePackage> => {
-
-            return checkVersionModules(packageFile, {
-                "dev": true,
-                "optional": true
-            });
-
-        });
-
-    }).then((result) => {
-
-        return unlink(packageFile).then(() => {
-            return result;
+        return checkVersionModules(packageContent, {
+            "dev": true,
+            "optional": true
         });
 
     });
