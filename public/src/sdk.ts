@@ -8,7 +8,9 @@
 // types & interfaces
 
     // locals
-    // import type { components, operations, paths } from "./descriptor";
+    import type { components, operations } from "./Descriptor";
+
+    export type tRepository = components["schemas"]["Repository"];
 
 // component
 
@@ -18,16 +20,17 @@ export class SDK extends EventEmitter<{
     "error": [ Error ];
 }> {
 
+    // static
+
+        public static readonly BASE_URL: string = window.location.protocol + "//" + window.location.host;
+
+    // constructor
+
     public constructor () {
 
         super();
 
         const socket = new WebSocket("ws://" + window.location.host);
-
-        socket.addEventListener("error", (err: Event): void => {
-            // eslint-disable-next-line no-console -- template: surface socket errors during development
-            console.error("socket error", err);
-        });
 
         socket.addEventListener("open", (): void => {
             this.emit("connected");
@@ -55,6 +58,22 @@ export class SDK extends EventEmitter<{
 
             }
             */
+
+        });
+
+    }
+
+    // api methods
+
+    public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
+
+        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + urlParams.path.user).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch repositories: " + res.statusText);
+            }
+
+            return res.json();
 
         });
 

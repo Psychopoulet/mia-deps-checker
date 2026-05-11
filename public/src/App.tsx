@@ -8,6 +8,7 @@
 
     // locals
     import getSDK from "./sdk";
+    import ChooseUser from "./components/ChooseUser";
 
 // types & interfaces
 
@@ -101,6 +102,14 @@ export default class App extends React.Component<iPropsNode, iState> {
 
     }
 
+    private _handleError (err: Error): void {
+
+        this.setState({
+            "error": err
+        });
+
+    }
+
     // render
 
     public render (): React.JSX.Element {
@@ -114,7 +123,7 @@ export default class App extends React.Component<iPropsNode, iState> {
         }
         else {
 
-            return <>
+            return <div className="container">
 
                 { this.state.error && <Modal appId="{{plugin.name}}-app" title="Error" variant="danger" centered size="sm" onClose={ this._handleCloseError.bind(this) }>
                     <ModalBody>
@@ -122,9 +131,9 @@ export default class App extends React.Component<iPropsNode, iState> {
                     </ModalBody>
                 </Modal> }
 
-                <span>Hello World !</span>
+                <ChooseUser onError={ this._handleError.bind(this) } />
 
-            </>;
+            </div>;
 
         }
 
