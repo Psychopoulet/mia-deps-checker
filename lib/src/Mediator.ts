@@ -94,7 +94,7 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
                     "full_name": rep.full_name,
                     "html_url": rep.html_url,
                     "package_url":
-                        "https://raw.githubusercontent.com/Psychopoulet/"
+                        "https://raw.githubusercontent.com/" + urlParams.path.user + "/"
                         + rep.name
                         + "/refs/heads/"
                         + (rep.default_branch ?? "main")
