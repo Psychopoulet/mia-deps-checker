@@ -69,36 +69,76 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     // render
 
+    private _renderUserSelector (): React.JSX.Element {
+
+        return <Select label="Users" value={ this.state.user } onChange={ this._handleChooseUser.bind(this) }>
+
+            <option value="">-</option>
+
+            { [ "Psychopoulet", "Malky-dev" ].map((user: string): React.JSX.Element => {
+
+                return <option key={ user } value={ user }>{ user }</option>;
+
+            }) }
+
+        </Select>;
+
+    }
+
     public render (): React.JSX.Element {
 
         if ("" === this.state.user.trim()) {
 
-            return <Card>
+            return <div className="row justify-content-md-center mt-3">
 
-                <CardHeader>Choose a user</CardHeader>
+                <div className="col-12 col-md-6">
 
-                <CardBody>
+                    <Card>
 
-                    <Select label="Users" value={ this.state.user } onChange={ this._handleChooseUser.bind(this) }>
+                        <CardHeader>Choose a user</CardHeader>
 
-                        <option value="">-</option>
+                        <CardBody>
 
-                        { [ "Psychopoulet", "Malky-dev" ].map((user: string): React.JSX.Element => {
+                            <Select label="Users" value={ this.state.user } onChange={ this._handleChooseUser.bind(this) }>
 
-                            return <option value={ user }>{ user }</option>;
+                                <option value="">-</option>
 
-                        }) }
+                                { [ "Psychopoulet", "Malky-dev" ].map((user: string): React.JSX.Element => {
 
-                    </Select>
+                                    return <option key={ user } value={ user }>{ user }</option>;
 
-                </CardBody>
+                                }) }
 
-            </Card>;
+                            </Select>
+
+                        </CardBody>
+
+                    </Card>
+
+                </div>
+
+            </div>;
 
         }
         else {
 
-            return <Repositories onLoadError={ this._handleLoadRepositoriesError.bind(this) } user={ this.state.user } />;
+            return <div className="row mt-3">
+
+                <div className="col-12 col-md-6 col-lg-4 col-xl-3">
+
+                    <Card>
+                        <CardBody>
+                            { this._renderUserSelector() }
+                        </CardBody>
+                    </Card>
+
+                </div>
+
+                <div className="col-12 col-md-6 col-lg-8 col-xl-9">
+                    <Repositories onLoadError={ this._handleLoadRepositoriesError.bind(this) } user={ this.state.user } />
+                </div>
+
+            </div>;
 
         }
 

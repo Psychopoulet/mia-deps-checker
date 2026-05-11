@@ -59,6 +59,24 @@ export default class Repositories extends React.Component<iProps, iState> {
 
     public componentDidMount (): void {
 
+        return this._loadRepositories();
+
+    }
+
+    public componentDidUpdate (prevProps: iProps): void {
+
+        if (prevProps.user !== this.props.user) {
+
+            this._loadRepositories();
+
+        }
+
+    }
+
+    // private
+
+    private _loadRepositories (): void {
+
         this.setState({
             "loading": true
         });

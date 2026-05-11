@@ -123,7 +123,7 @@ export default class App extends React.Component<iPropsNode, iState> {
         }
         else {
 
-            return <div className="container">
+            return <div className="container-fluid">
 
                 { this.state.error && <Modal appId="{{plugin.name}}-app" title="Error" variant="danger" centered size="sm" onClose={ this._handleCloseError.bind(this) }>
                     <ModalBody>
