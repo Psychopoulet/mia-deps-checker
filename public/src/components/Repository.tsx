@@ -5,9 +5,13 @@
     // externals
     import React from "react";
     import {
-        Card, CardHeader, CardList,
-        ListItem
+        Card, CardHeader, CardList, CardFooter,
+        ListItem,
+        Button
     } from "react-bootstrap-fontawesome";
+
+    // locals
+    import getSDK from "../sdk";
 
 // types & interfaces
 
@@ -15,21 +19,73 @@
     import type { iPropsNode } from "react-bootstrap-fontawesome";
 
     // locals
-    import type { tRepository } from "../sdk";
+    import type { SDK, tRepository } from "../sdk";
 
 // props & state
 
     interface iProps extends iPropsNode {
+        "onAnalyzeError": (err: Error) => void;
         "repository": tRepository;
+    }
+
+    interface iState {
+        "analyzing": boolean;
     }
 
 // component
 
-export default class Repository extends React.Component<iProps> {
+export default class Repository extends React.Component<iProps, iState> {
 
     // name
 
         public static displayName: string = "Repository";
+
+    // private
+
+        private readonly _sdk: SDK = getSDK();
+
+    // constructor
+
+    public constructor (props: iProps) {
+
+        super(props);
+
+        this.state = {
+            "analyzing": false
+        };
+
+    }
+
+    // interface handlers
+
+    private _handleAnalyze (e: React.MouseEvent<HTMLButtonElement>): void {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.setState({
+            "analyzing": true
+        });
+
+        this._sdk.analyzePackage(this.props.repository.package_url).then((content): void => {
+
+            console.log("analyze package", content);
+
+            this.setState({
+                "analyzing": false
+            });
+
+        }).catch((err: Error): void => {
+
+            this.setState({
+                "analyzing": false
+            });
+
+            this.props.onAnalyzeError(err);
+
+        });
+
+    }
 
     // render
 
@@ -51,9 +107,20 @@ export default class Repository extends React.Component<iProps> {
             <CardList>
 
                 <ListItem variant={ 0 < this.props.repository.watchers_count ? "success" : null }>watchers: { this.props.repository.watchers_count }</ListItem>
-                <ListItem variant={ 0 < this.props.repository.open_issues ? "danger" : null }>issues: { this.props.repository.open_issues }</ListItem>
+                <ListItem variant={ 0 < this.props.repository.open_issues_count ? "danger" : null }>issues: { this.props.repository.open_issues_count }</ListItem>
 
             </CardList>
+
+            <CardFooter>
+
+                <Button icon="cog" block
+                    title="Analyze"
+                    onClick={ this._handleAnalyze.bind(this) }
+                >
+                    Analyze
+                </Button>
+
+            </CardFooter>
 
         </Card>;
 

@@ -6,6 +6,9 @@
     // externals
     import checkVersionModules from "check-version-modules";
 
+    // locals
+    import isPlainObject from "./isPlainObject";
+
 // types & interfaces
 
     // natives
@@ -46,6 +49,14 @@ export default function analyzePackage (packageUrl: string): Promise<iAnalyzePac
     }).then((content: string): Record<string, object | string | number | boolean> => {
         return JSON.parse(content) as Record<string, object | string | number | boolean>;
     }).then((packageContent: Record<string, object | string | number | boolean>): Promise<iAnalyzePackage> => {
+
+        if (
+            !isPlainObject(packageContent.dependencies)
+            && !isPlainObject(packageContent.devDependencies)
+            && !isPlainObject(packageContent.optionalDependencies)
+        ) {
+            throw new Error("No dependency found");
+        }
 
         return checkVersionModules(packageContent, {
             "dev": true,

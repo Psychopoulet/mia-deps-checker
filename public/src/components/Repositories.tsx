@@ -25,6 +25,7 @@
 
     interface iProps extends iPropsNode {
         "onLoadError": (err: Error) => void;
+        "onAnalyzeError": (err: Error) => void;
         "user": string;
     }
 
@@ -82,11 +83,7 @@ export default class Repositories extends React.Component<iProps, iState> {
             "loading": true
         });
 
-        this._sdk.getRepositoriesByUser({
-            "path": {
-                "user": this.props.user
-            }
-        }).then((repositories): void => {
+        this._sdk.getRepositoriesByUser(this.props.user).then((repositories): void => {
 
             this.setState({
                 "loading": false,
@@ -128,7 +125,12 @@ export default class Repositories extends React.Component<iProps, iState> {
                     { this.state.repositories.map((repository: tRepository): React.JSX.Element => {
 
                         return <div className="col">
-                            <Repository key={ repository.full_name } repository={ repository } />
+
+                            <Repository key={ repository.full_name }
+                                onAnalyzeError={ this.props.onAnalyzeError }
+                                repository={ repository }
+                            />
+
                         </div>;
 
                     }) }

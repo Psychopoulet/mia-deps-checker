@@ -45,32 +45,35 @@ export class SDK extends EventEmitter<{
             this.emit("error", new Error(message));
         });
 
-        socket.addEventListener("message", (): void => {
+    }
 
-            /*
-            const parsedMessage: <types> = JSON.parse(_event.data);
+    // api methods
 
-            if (<plugin name> === parsedMessage.plugin) {
+    public getRepositoriesByUser (user: operations["getRepositoriesByUser"]["parameters"]["path"]["user"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
-                switch (parsedMessage.command) {
-                    <cases>
-                }
+        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + user).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
 
+            if (!res.ok) {
+                throw new Error("Failed to fetch repositories: " + res.statusText);
             }
-            */
+
+            return res.json();
 
         });
 
     }
 
-    // api methods
+    public analyzePackage (
+        packageUrl: operations["analyzePackage"]["requestBody"]["content"]["application/json"]["package_url"]
+    ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
 
-    public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
-
-        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + urlParams.path.user).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
+        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/analyze", {
+            "method": "POST",
+            "body": JSON.stringify({ "package_url": packageUrl })
+        }).then((res: Response): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> => {
 
             if (!res.ok) {
-                throw new Error("Failed to fetch repositories: " + res.statusText);
+                throw new Error("Failed to analyze repository: " + res.statusText);
             }
 
             return res.json();

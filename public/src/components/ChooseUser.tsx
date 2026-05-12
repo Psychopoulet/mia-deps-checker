@@ -67,6 +67,12 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     }
 
+    private _handleAnalyzeError (err: Error): void {
+
+        this.props.onError(err);
+
+    }
+
     // render
 
     private _renderUserSelector (): React.JSX.Element {
@@ -135,7 +141,13 @@ export default class ChooseUser extends React.Component<iProps, iState> {
                 </div>
 
                 <div className="col-12 col-md-6 col-lg-8 col-xl-9">
-                    <Repositories onLoadError={ this._handleLoadRepositoriesError.bind(this) } user={ this.state.user } />
+
+                    <Repositories
+                        onLoadError={ this._handleLoadRepositoriesError.bind(this) }
+                        onAnalyzeError={ this._handleAnalyzeError.bind(this) }
+                        user={ this.state.user }
+                    />
+
                 </div>
 
             </div>;
