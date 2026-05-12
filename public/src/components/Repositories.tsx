@@ -11,6 +11,7 @@
 
     // locals
     import getSDK from "../sdk";
+    import Repository from "./Repository";
 
 // types & interfaces
 
@@ -118,11 +119,21 @@ export default class Repositories extends React.Component<iProps, iState> {
 
         return <Card>
 
-            <CardHeader>{ this.props.user } repositories</CardHeader>
+            <CardHeader>Repositories</CardHeader>
 
             <CardBody>
 
-                { JSON.stringify(this.state.repositories) }
+                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                    { this.state.repositories.map((repository: tRepository): React.JSX.Element => {
+
+                        return <div className="col">
+                            <Repository key={ repository.full_name } repository={ repository } />
+                        </div>;
+
+                    }) }
+
+                </div>
 
             </CardBody>
 
