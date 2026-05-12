@@ -293,12 +293,9 @@
 					},
 					"open_issues_count": {
 						"type": "number"
-					},
-					"watchers": {
-						"type": "number"
 					}
 				},
-				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count", "watchers" ]
+				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count" ]
 			},
 			"Analyze": {
 				"type": "object",
