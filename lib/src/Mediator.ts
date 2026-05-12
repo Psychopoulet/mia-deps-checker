@@ -103,7 +103,6 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
                     "disabled": rep.disabled ?? false,
                     "language": rep.language ?? "unknown",
                     "watchers_count": rep.watchers_count ?? 0,
-                    "open_issues": rep.open_issues ?? 0,
                     "open_issues_count": rep.open_issues_count ?? 0
                 };
 

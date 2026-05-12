@@ -288,14 +288,11 @@
 					"watchers_count": {
 						"type": "number"
 					},
-					"open_issues": {
-						"type": "number"
-					},
 					"open_issues_count": {
 						"type": "number"
 					}
 				},
-				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count" ]
+				"required": [ "name", "full_name", "html_url", "package_url", "archived", "disabled", "language", "watchers_count", "open_issues_count" ]
 			},
 			"Analyze": {
 				"type": "object",
