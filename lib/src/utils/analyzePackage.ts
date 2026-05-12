@@ -15,13 +15,11 @@
     import type { IncomingMessage } from "node:http";
 
     // locals
-    interface iAnalyzePackage {
-        "result": boolean;
-    }
+    import type { components } from "../Descriptor";
 
 // module
 
-export default function analyzePackage (packageUrl: string): Promise<iAnalyzePackage> {
+export default function analyzePackage (packageUrl: string): Promise<components["schemas"]["Analyze"]> {
 
     return new Promise((resolve: (result: string) => void, reject: (error: Error) => void): void => {
 
@@ -48,7 +46,7 @@ export default function analyzePackage (packageUrl: string): Promise<iAnalyzePac
 
     }).then((content: string): Record<string, object | string | number | boolean> => {
         return JSON.parse(content) as Record<string, object | string | number | boolean>;
-    }).then((packageContent: Record<string, object | string | number | boolean>): Promise<iAnalyzePackage> => {
+    }).then((packageContent: Record<string, object | string | number | boolean>): Promise<components["schemas"]["Analyze"]> => {
 
         if (
             !isPlainObject(packageContent.dependencies)

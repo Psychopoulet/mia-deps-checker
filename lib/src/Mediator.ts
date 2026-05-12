@@ -112,12 +112,12 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
     }
 
-    public analyzePackage (urlParams: operations["analyzePackage"]["parameters"], bodyParams: operations["analyzePackage"]["requestBody"]["content"]["application/json"]): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
+    public analyzePackage (
+        urlParams: operations["analyzePackage"]["parameters"],
+        bodyParams: operations["analyzePackage"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
 
-        return analyzePackage(bodyParams.package_url).then((content) => {
-            console.log(content);
-            return content;
-        });
+        return analyzePackage(bodyParams.package_url);
 
     }
 

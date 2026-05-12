@@ -299,9 +299,43 @@
 				"properties": {
 					"result": {
 						"type": "boolean"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"version": {
+									"type": "string"
+								},
+								"dev": {
+									"type": "boolean"
+								},
+								"optional": {
+									"type": "boolean"
+								},
+								"path": {
+									"type": "string"
+								},
+								"time": {
+									"type": "string"
+								},
+								"result": {
+									"type": "string",
+									"enum": [ "success", "warning", "fail_patch", "fail_minor", "fail_major" ]
+								},
+								"message": {
+									"type": "string"
+								}
+							},
+							"required": [ "name", "version", "dev", "optional", "path", "time", "result", "message" ]
+						}
 					}
 				},
-				"required": [ "result" ]
+				"required": [ "result", "results" ]
 			}
 		}
 	},
