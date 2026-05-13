@@ -51,10 +51,24 @@ export class SDK extends EventEmitter<{
 
     public getRepositoriesByUser (user: operations["getRepositoriesByUser"]["parameters"]["path"]["user"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
-        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + user).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
+        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + user, {
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
 
             if (!res.ok) {
-                throw new Error("Failed to fetch repositories: " + res.statusText);
+
+                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                    res.json().then((content: operations["getRepositoriesByUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                        return reject(new Error(content.message));
+                    }).catch((): void => {
+                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
+                    });
+
+                });
+
             }
 
             return res.json();
@@ -69,11 +83,24 @@ export class SDK extends EventEmitter<{
 
         return fetch(SDK.BASE_URL + "/mia-deps-checker/api/analyze", {
             "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
             "body": JSON.stringify({ "package_url": packageUrl })
         }).then((res: Response): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> => {
 
             if (!res.ok) {
-                throw new Error("Failed to analyze repository: " + res.statusText);
+
+                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                    res.json().then((content: operations["analyzePackage"]["responses"]["default"]["content"]["application/json"]): void => {
+                        return reject(new Error(content.message));
+                    }).catch((): void => {
+                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
+                    });
+
+                });
+
             }
 
             return res.json();

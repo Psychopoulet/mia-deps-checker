@@ -124,9 +124,9 @@ export default class Repositories extends React.Component<iProps, iState> {
 
                     { this.state.repositories.map((repository: tRepository): React.JSX.Element => {
 
-                        return <div className="col">
+                        return <div key={ repository.full_name } className="col">
 
-                            <Repository key={ repository.full_name }
+                            <Repository
                                 onAnalyzeError={ this.props.onAnalyzeError }
                                 repository={ repository }
                             />

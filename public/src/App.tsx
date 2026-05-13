@@ -94,7 +94,10 @@ export default class App extends React.Component<iPropsNode, iState> {
 
     // interface handlers
 
-    private _handleCloseError (): void {
+    private _handleCloseError (e: React.MouseEvent<HTMLButtonElement>): void {
+
+        e.preventDefault();
+        e.stopPropagation();
 
         this.setState({
             "error": null

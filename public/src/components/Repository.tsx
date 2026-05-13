@@ -6,6 +6,7 @@
     import React from "react";
     import {
         Card, CardHeader, CardList, CardFooter,
+        Modal, ModalList,
         ListItem,
         Button
     } from "react-bootstrap-fontawesome";
@@ -20,6 +21,7 @@
 
     // locals
     import type { SDK, tRepository } from "../sdk";
+    import type { components } from "../Descriptor";
 
 // props & state
 
@@ -30,6 +32,7 @@
 
     interface iState {
         "analyzing": boolean;
+        "analyzeResult": components["schemas"]["Analyze"] | null;
     }
 
 // component
@@ -51,7 +54,8 @@ export default class Repository extends React.Component<iProps, iState> {
         super(props);
 
         this.state = {
-            "analyzing": false
+            "analyzing": false,
+            "analyzeResult": null
         };
 
     }
@@ -67,12 +71,11 @@ export default class Repository extends React.Component<iProps, iState> {
             "analyzing": true
         });
 
-        this._sdk.analyzePackage(this.props.repository.package_url).then((content): void => {
-
-            console.log("analyze package", content);
+        this._sdk.analyzePackage(this.props.repository.package_url).then((content: components["schemas"]["Analyze"]): void => {
 
             this.setState({
-                "analyzing": false
+                "analyzing": false,
+                "analyzeResult": content
             });
 
         }).catch((err: Error): void => {
@@ -87,42 +90,94 @@ export default class Repository extends React.Component<iProps, iState> {
 
     }
 
+    private _handleCloseAnalyzeResult (e: React.MouseEvent<HTMLButtonElement>): void {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.setState({
+            "analyzeResult": null
+        });
+
+    }
+
     // render
 
     public render (): React.JSX.Element {
 
-        return <Card variant={ this.props.repository.archived ? "danger" : null }>
+        return <>
 
-            <CardHeader justify>
+            { this.state.analyzeResult && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
+                variant={ this.state.analyzeResult.result ? "success" : "warning" } centered size="lg" scrollable
+                onClose={ this._handleCloseAnalyzeResult.bind(this) }>
 
-                <span>
-                    <a href={ this.props.repository.html_url } target="_blank" rel="noopener noreferrer">{ this.props.repository.name }</a>
-                    { this.props.repository.archived && <span className="text-muted"> (archived)</span> }
-                </span>
+                    <ModalList>
 
-                { this.props.repository.language }
+                        { this.state.analyzeResult.results.map((result): React.JSX.Element => {
 
-            </CardHeader>
+                            let variant: "warning" | "danger" | "info" | "secondary" | null = null;
+                            let className: string | null = null;
 
-            <CardList>
+                            if ("warning" === result.result) {
+                                variant = "secondary";
+                            }
+                            else if ("fail_major" === result.result) {
+                                variant = "danger";
+                            }
+                            else if ("fail_minor" === result.result) {
+                                className = "text-danger";
+                            }
+                            else if ("fail_patch" === result.result) {
+                                variant = "warning";
+                            }
+                            else {
+                                variant = null;
+                            }
 
-                <ListItem variant={ 0 < this.props.repository.watchers_count ? "success" : null }>watchers: { this.props.repository.watchers_count }</ListItem>
-                <ListItem variant={ 0 < this.props.repository.open_issues_count ? "danger" : null }>issues: { this.props.repository.open_issues_count }</ListItem>
+                            return <ListItem key={ result.name } className={ className ?? undefined } variant={ variant ?? undefined } justify>
+                                { result.name } { "success" !== result.result && <span className="text-muted">{ result.message }</span> }
+                            </ListItem>;
 
-            </CardList>
+                        }) }
 
-            <CardFooter>
+                    </ModalList>
 
-                <Button icon="cog" block
-                    title="Analyze"
-                    onClick={ this._handleAnalyze.bind(this) }
-                >
-                    Analyze
-                </Button>
+            </Modal> }
 
-            </CardFooter>
+            <Card variant={ this.props.repository.archived ? "danger" : null }>
 
-        </Card>;
+                <CardHeader justify>
+
+                    <span>
+                        <a href={ this.props.repository.html_url } target="_blank" rel="noopener noreferrer">{ this.props.repository.name }</a>
+                        { this.props.repository.archived && <span className="text-muted"> (archived)</span> }
+                    </span>
+
+                    { this.props.repository.language }
+
+                </CardHeader>
+
+                <CardList>
+
+                    <ListItem variant={ 0 < this.props.repository.watchers_count ? "success" : null }>watchers: { this.props.repository.watchers_count }</ListItem>
+                    <ListItem variant={ 0 < this.props.repository.open_issues_count ? "danger" : null }>issues: { this.props.repository.open_issues_count }</ListItem>
+
+                </CardList>
+
+                <CardFooter>
+
+                    <Button icon="cog" block
+                        title="Analyze"
+                        onClick={ this._handleAnalyze.bind(this) }
+                    >
+                        Analyze
+                    </Button>
+
+                </CardFooter>
+
+            </Card>
+
+        </>;
 
     }
 
