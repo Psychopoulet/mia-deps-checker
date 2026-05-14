@@ -81,6 +81,10 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
     // api
 
+    public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
+        return Promise.resolve([ "Psychopoulet", "Malky-dev" ]);
+    }
+
     public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
         return getRepositoriesByUser(urlParams.path.user).then((content): Array<components["schemas"]["Repository"]> => {

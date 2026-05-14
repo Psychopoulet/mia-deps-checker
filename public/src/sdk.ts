@@ -49,6 +49,34 @@ export class SDK extends EventEmitter<{
 
     // api methods
 
+    public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
+
+        return fetch(SDK.BASE_URL + "/mia-deps-checker/api/users", {
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then((res: Response): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (!res.ok) {
+
+                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                    res.json().then((content: operations["getUsers"]["responses"]["default"]["content"]["application/json"]): void => {
+                        return reject(new Error(content.message));
+                    }).catch((): void => {
+                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
+                    });
+
+                });
+
+            }
+
+            return res.json();
+
+        });
+
+    }
+
     public getRepositoriesByUser (user: operations["getRepositoriesByUser"]["parameters"]["path"]["user"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
         return fetch(SDK.BASE_URL + "/mia-deps-checker/api/repositories/" + user, {

@@ -10,12 +10,17 @@
     } from "react-bootstrap-fontawesome";
 
     // locals
+    import getSDK from "../sdk";
     import Repositories from "./Repositories";
 
 // types & interfaces
 
     // externals
     import type { iPropsNode } from "react-bootstrap-fontawesome";
+
+    // locals
+    import type { SDK } from "../sdk";
+    import type { operations } from "../Descriptor";
 
 // props & state
 
@@ -24,7 +29,9 @@
     }
 
     interface iState {
-        "user": string;
+        "loading": boolean;
+        "users": string[];
+        "selected-user": string;
     }
 
 // component
@@ -35,6 +42,10 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
         public static displayName: string = "ChooseUser";
 
+    // private
+
+        private readonly _sdk: SDK = getSDK();
+
     // constructor
 
     public constructor (props: iProps) {
@@ -42,8 +53,28 @@ export default class ChooseUser extends React.Component<iProps, iState> {
         super(props);
 
         this.state = {
-            "user": ""
+            "loading": true,
+            "users": [],
+            "selected-user": ""
         };
+
+    }
+
+    public componentDidMount (): void {
+
+        this._sdk.getUsers().then((users: operations["getUsers"]["responses"]["200"]["content"]["application/json"]): void => {
+
+            this.setState({
+                "users": users,
+                "loading": false
+            });
+
+        }).catch((err: Error): void => {
+
+            this.setState({ "loading": false });
+            this.props.onError(err);
+
+        });
 
     }
 
@@ -52,7 +83,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
     private _handleChooseUser (e: React.ChangeEvent<HTMLSelectElement>, newValue: string): void {
 
         this.setState({
-            "user": newValue
+            "selected-user": newValue
         });
 
     }
@@ -60,7 +91,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
     private _handleLoadRepositoriesError (err: Error): void {
 
         this.setState({
-            "user": ""
+            "selected-user": ""
         });
 
         this.props.onError(err);
@@ -77,7 +108,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     private _renderUserSelector (): React.JSX.Element {
 
-        return <Select label="Users" value={ this.state.user } onChange={ this._handleChooseUser.bind(this) }>
+        return <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser.bind(this) }>
 
             <option value="">-</option>
 
@@ -93,7 +124,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     public render (): React.JSX.Element {
 
-        if ("" === this.state.user.trim()) {
+        if ("" === this.state["selected-user"].trim()) {
 
             return <div className="row justify-content-md-center mt-3">
 
@@ -105,17 +136,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                         <CardBody>
 
-                            <Select label="Users" value={ this.state.user } onChange={ this._handleChooseUser.bind(this) }>
-
-                                <option value="">-</option>
-
-                                { [ "Psychopoulet", "Malky-dev" ].map((user: string): React.JSX.Element => {
-
-                                    return <option key={ user } value={ user }>{ user }</option>;
-
-                                }) }
-
-                            </Select>
+                            { this.state.loading ? "Loading..." : this._renderUserSelector() }
 
                         </CardBody>
 
@@ -145,7 +166,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
                     <Repositories
                         onLoadError={ this._handleLoadRepositoriesError.bind(this) }
                         onAnalyzeError={ this._handleAnalyzeError.bind(this) }
-                        user={ this.state.user }
+                        user={ this.state["selected-user"] }
                     />
 
                 </div>
