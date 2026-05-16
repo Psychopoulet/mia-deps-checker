@@ -60,7 +60,7 @@ export default class OrchestratorTemplate extends Orchestrator {
                     return Promise.resolve();
                 }
 
-                return writeFile(usersFile, "{}", "utf-8");
+                return writeFile(usersFile, "[]", "utf-8");
 
             });
 

@@ -112,7 +112,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
             <option value="">-</option>
 
-            { [ "Psychopoulet", "Malky-dev" ].map((user: string): React.JSX.Element => {
+            { this.state.users.map((user: string): React.JSX.Element => {
 
                 return <option key={ user } value={ user }>{ user }</option>;
 
