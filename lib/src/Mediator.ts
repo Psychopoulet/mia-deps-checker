@@ -15,7 +15,7 @@
 
     // externals
     import type ContainerPattern from "node-containerpattern";
-    import type { iEventsMinimal } from "node-pluginsmanager-plugin";
+    import type { iEventsMinimal, iDescriptorUserOptions } from "node-pluginsmanager-plugin";
 
     // locals
     import type { operations, components } from "./Descriptor";
@@ -27,22 +27,30 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
         "released": [ ContainerPattern ];
     }> {
 
+    // attributes
+
+        // private
+
+        private readonly _dbFile: string;
+
     // constructor
 
-    protected _initWorkSpace (): Promise<void> {
+    public constructor (data: iDescriptorUserOptions) {
 
-        // <init work space>
+        super(data);
 
-        return Promise.resolve();
+        this._dbFile = join(data.externalResourcesDirectory, "users.json");
 
     }
 
-    protected _releaseWorkSpace (): Promise<void> {
+    // constructor
 
-        // <release work space>
-
+    protected _initWorkSpace (): Promise<void> {
         return Promise.resolve();
+    }
 
+    protected _releaseWorkSpace (): Promise<void> {
+        return Promise.resolve();
     }
 
     // front files
@@ -82,7 +90,11 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
     // api
 
     public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
-        return Promise.resolve([ "Psychopoulet", "Malky-dev" ]);
+
+        return readFile(this._dbFile, "utf-8").then((content: string) => {
+            return JSON.parse(content) as string[];
+        });
+
     }
 
     public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
