@@ -1,5 +1,3 @@
-
-
 // deps
 
     // externals
@@ -62,7 +60,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
     // interface handlers
 
-    private _handleAnalyze (e: React.MouseEvent<HTMLButtonElement>): void {
+    private readonly _handleAnalyze = (e: React.MouseEvent<HTMLButtonElement>): void => {
 
         e.preventDefault();
         e.stopPropagation();
@@ -88,9 +86,9 @@ export default class Repository extends React.Component<iProps, iState> {
 
         });
 
-    }
+    };
 
-    private _handleCloseAnalyzeResult (e: React.MouseEvent<HTMLButtonElement>): void {
+    private readonly _handleCloseAnalyzeResult = (e: React.MouseEvent<HTMLButtonElement>): void => {
 
         e.preventDefault();
         e.stopPropagation();
@@ -99,7 +97,7 @@ export default class Repository extends React.Component<iProps, iState> {
             "analyzeResult": null
         });
 
-    }
+    };
 
     // render
 
@@ -109,7 +107,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
             { this.state.analyzeResult && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
                 variant={ this.state.analyzeResult.result ? "success" : "warning" } centered size="lg" scrollable
-                onClose={ this._handleCloseAnalyzeResult.bind(this) }>
+                onClose={ this._handleCloseAnalyzeResult }>
 
                     <ModalList>
 
@@ -168,7 +166,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
                     <Button icon="cog" block
                         title="Analyze"
-                        onClick={ this._handleAnalyze.bind(this) }
+                        onClick={ this._handleAnalyze }
                     >
                         Analyze
                     </Button>

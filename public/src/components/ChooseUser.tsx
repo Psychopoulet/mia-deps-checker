@@ -1,5 +1,3 @@
-
-
 // deps
 
     // externals
@@ -80,15 +78,15 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     // interface handlers
 
-    private _handleChooseUser (e: React.ChangeEvent<HTMLSelectElement>, newValue: string): void {
+    private readonly _handleChooseUser = (e: React.ChangeEvent<HTMLSelectElement>, newValue: string): void => {
 
         this.setState({
             "selected-user": newValue
         });
 
-    }
+    };
 
-    private _handleLoadRepositoriesError (err: Error): void {
+    private readonly _handleLoadRepositoriesError = (err: Error): void => {
 
         this.setState({
             "selected-user": ""
@@ -96,19 +94,19 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
         this.props.onError(err);
 
-    }
+    };
 
-    private _handleAnalyzeError (err: Error): void {
+    private readonly _handleAnalyzeError = (err: Error): void => {
 
         this.props.onError(err);
 
-    }
+    };
 
     // render
 
     private _renderUserSelector (): React.JSX.Element {
 
-        return <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser.bind(this) }>
+        return <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser }>
 
             <option value="">-</option>
 
@@ -164,8 +162,8 @@ export default class ChooseUser extends React.Component<iProps, iState> {
                 <div className="col-12 col-md-6 col-lg-8 col-xl-9">
 
                     <Repositories
-                        onLoadError={ this._handleLoadRepositoriesError.bind(this) }
-                        onAnalyzeError={ this._handleAnalyzeError.bind(this) }
+                        onLoadError={ this._handleLoadRepositoriesError }
+                        onAnalyzeError={ this._handleAnalyzeError }
                         user={ this.state["selected-user"] }
                     />
 
