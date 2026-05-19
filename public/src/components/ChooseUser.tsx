@@ -4,7 +4,7 @@
     import React from "react";
     import {
         Card, CardBody, CardHeader,
-        Select
+        Select, InputArray
     } from "react-bootstrap-fontawesome";
 
     // locals
@@ -102,21 +102,33 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     };
 
+    private readonly _handleChangeUsers = (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>, newValue: string[]): void => {
+
+        this.setState({
+            "users": newValue
+        });
+
+    };
+
     // render
 
     private _renderUserSelector (): React.JSX.Element {
 
-        return <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser }>
+        return <div>
 
-            <option value="">-</option>
+            <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser }>
 
-            { this.state.users.map((user: string): React.JSX.Element => {
+                <option value="">-</option>
 
-                return <option key={ user } value={ user }>{ user }</option>;
+                { this.state.users.map((user: string): React.JSX.Element => {
 
-            }) }
+                    return <option key={ user } value={ user }>{ user }</option>;
 
-        </Select>;
+                }) }
+
+            </Select>
+
+        </div>;
 
     }
 
@@ -138,6 +150,12 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                         </CardBody>
 
+                        { !this.state.loading && <CardBody>
+
+                            <InputArray label="Users" value={ this.state.users } onChange={ this._handleChangeUsers } />
+
+                        </CardBody> }
+
                     </Card>
 
                 </div>
@@ -152,9 +170,19 @@ export default class ChooseUser extends React.Component<iProps, iState> {
                 <div className="col-12 col-md-6 col-lg-4 col-xl-3">
 
                     <Card>
+
                         <CardBody>
+
                             { this._renderUserSelector() }
+
                         </CardBody>
+
+                        <CardBody>
+
+                            <InputArray label="Users" value={ this.state.users } onChange={ this._handleChangeUsers } />
+
+                        </CardBody>
+
                     </Card>
 
                 </div>

@@ -1,7 +1,7 @@
 // deps
 
     // natives
-    import { readFile } from "node:fs/promises";
+    import { readFile, writeFile } from "node:fs/promises";
     import { join } from "node:path";
 
     // externals
@@ -91,10 +91,39 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
     public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
 
-        return readFile(this._dbFile, "utf-8").then((content: string) => {
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
             return JSON.parse(content) as string[];
         });
 
+    }
+
+    public addUser (urlParams: operations["addUser"]["parameters"], bodyParams: operations["addUser"]["requestBody"]["content"]["application/json"]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
+
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
+            return JSON.parse(content) as string[];
+        }).then((users: string[]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
+
+            if (users.includes(bodyParams)) {
+                return Promise.resolve();
+            }
+
+            users.push(bodyParams);
+            return writeFile(this._dbFile, JSON.stringify(users), "utf-8");
+
+        });
+    }
+
+    public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
+
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
+            return JSON.parse(content) as string[];
+        }).then((users: string[]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
+
+            return writeFile(this._dbFile, JSON.stringify(users.filter((user: string): boolean => {
+                return user !== bodyParams;
+            })), "utf-8");
+
+        });
     }
 
     public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {

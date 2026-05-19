@@ -138,6 +138,70 @@ export class SDK extends EventEmitter<{
 
     }
 
+    public addUser (user: operations["addUser"]["requestBody"]["content"]["application/json"]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
+
+        const url: keyof paths = "/mia-deps-checker/api/users";
+
+        return fetch(url, {
+            "method": "PUT",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({ "user": user })
+        }).then((res: Response): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
+
+            if (!res.ok) {
+
+                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                    res.json().then((content: operations["addUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                        return reject(new Error(content.message));
+                    }).catch((): void => {
+                        return reject(new Error("Failed to add user: " + res.statusText));
+                    });
+
+                });
+
+            }
+
+            return res.json();
+
+        });
+
+    }
+
+    public deleteUser (user: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
+
+        const url: keyof paths = "/mia-deps-checker/api/users";
+
+        return fetch(url, {
+            "method": "DELETE",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({ "user": user })
+        }).then((res: Response): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (!res.ok) {
+
+                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                    res.json().then((content: operations["deleteUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                        return reject(new Error(content.message));
+                    }).catch((): void => {
+                        return reject(new Error("Failed to add user: " + res.statusText));
+                    });
+
+                });
+
+            }
+
+            return res.json();
+
+        });
+
+    }
+
     public getRepositoriesByUser (user: operations["getRepositoriesByUser"]["parameters"]["path"]["user"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/repositories/{user}";
