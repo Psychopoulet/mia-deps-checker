@@ -1,7 +1,7 @@
 // deps
 
     // natives
-    import { readFile } from "node:fs/promises";
+    import { readFile, writeFile } from "node:fs/promises";
     import { join } from "node:path";
 
     // externals
@@ -9,12 +9,13 @@
 
     // locals
     import getRepositoriesByUser from "./utils/getRepositoriesByUser";
+    import analyzePackage from "./utils/analyzePackage";
 
 // types & interfaces
 
     // externals
     import type ContainerPattern from "node-containerpattern";
-    import type { iEventsMinimal } from "node-pluginsmanager-plugin";
+    import type { iEventsMinimal, iDescriptorUserOptions } from "node-pluginsmanager-plugin";
 
     // locals
     import type { operations, components } from "./Descriptor";
@@ -26,22 +27,30 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
         "released": [ ContainerPattern ];
     }> {
 
+    // attributes
+
+        // private
+
+        private readonly _dbFile: string;
+
     // constructor
 
-    protected _initWorkSpace (): Promise<void> {
+    public constructor (data: iDescriptorUserOptions) {
 
-        // <init work space>
+        super(data);
 
-        return Promise.resolve();
+        this._dbFile = join(data.externalResourcesDirectory, "users.json");
 
     }
 
-    protected _releaseWorkSpace (): Promise<void> {
+    // constructor
 
-        // <release work space>
-
+    protected _initWorkSpace (): Promise<void> {
         return Promise.resolve();
+    }
 
+    protected _releaseWorkSpace (): Promise<void> {
+        return Promise.resolve();
     }
 
     // front files
@@ -74,49 +83,86 @@ export default class MediatorTemplate extends Mediator<iEventsMinimal & {
 
     }
 
-    public getFrontAppMap (): Promise<operations["getFrontApp"]["responses"]["200"]["content"]["application/javascript"]> {
+    public getFrontAppMap (): Promise<string> { // tricks return to avoid costful parsing
         return readFile(join(__dirname, "..", "..", "public", "dist", "bundle.min.js.map"), "utf-8");
     }
 
     // api
 
-    public getRepositoriesByUser (user: string): Promise<Array<components["schemas"]["Repository"]>> {
+    public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
 
-        return getRepositoriesByUser(user).then((content: Array<Record<string, unknown>>): Array<components["schemas"]["Repository"]> => {
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
+            return JSON.parse(content) as string[];
+        });
 
-            return content.filter((rep: Record<string, unknown>): boolean => {
+    }
 
-                return !(rep.archived as boolean)
-                    && (
-                        0 < (rep.open_issues_count as number)
-                        || 0 < (rep.open_issues as number)
-                        || 0 < (rep.watchers_count as number)
-                    );
+    public addUser (urlParams: operations["addUser"]["parameters"], bodyParams: operations["addUser"]["requestBody"]["content"]["application/json"]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
 
-            }).map((rep) => {
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
+            return JSON.parse(content) as string[];
+        }).then((users: string[]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
+
+            if (users.includes(bodyParams)) {
+                return Promise.resolve();
+            }
+
+            users.push(bodyParams);
+            return writeFile(this._dbFile, JSON.stringify(users), "utf-8");
+
+        });
+    }
+
+    public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
+
+        return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
+            return JSON.parse(content) as string[];
+        }).then((users: string[]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
+
+            return writeFile(this._dbFile, JSON.stringify(users.filter((user: string): boolean => {
+                return user !== bodyParams;
+            })), "utf-8");
+
+        });
+    }
+
+    public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
+
+        return getRepositoriesByUser(urlParams.path.user).then((content): Array<components["schemas"]["Repository"]> => {
+
+            return content.filter((rep): boolean => {
+                return !(rep.archived ?? false);
+            }).map((rep): components["schemas"]["Repository"] => {
 
                 return {
-                    "name": rep.name as string,
-                    "full_name": rep.full_name as string,
-                    "html_url": rep.html_url as string,
-                    "raw_package":
-                        "https://raw.githubusercontent.com/Psychopoulet/"
-                        + (rep.name as string)
+                    "name": rep.name,
+                    "full_name": rep.full_name,
+                    "html_url": rep.html_url,
+                    "package_url":
+                        "https://raw.githubusercontent.com/" + urlParams.path.user + "/"
+                        + rep.name
                         + "/refs/heads/"
-                        + (rep.default_branch as string)
+                        + (rep.default_branch ?? "main")
                         + "/package.json",
-                    "archived": rep.archived as boolean,
-                    "disabled": rep.disabled as boolean,
-                    "language": rep.language as string,
-                    "watchers_count": rep.watchers_count as number,
-                    "open_issues": rep.open_issues as number,
-                    "open_issues_count": rep.open_issues_count as number,
-                    "watchers": rep.watchers as number
+                    "archived": rep.archived ?? false,
+                    "disabled": rep.disabled ?? false,
+                    "language": rep.language ?? "unknown",
+                    "watchers_count": rep.watchers_count ?? 0,
+                    "open_issues_count": rep.open_issues_count ?? 0
                 };
 
             });
 
         });
+
+    }
+
+    public analyzePackage (
+        urlParams: operations["analyzePackage"]["parameters"],
+        bodyParams: operations["analyzePackage"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
+
+        return analyzePackage(bodyParams.package_url);
 
     }
 

@@ -1,13 +1,12 @@
-
-
 // deps
 
     // externals
     import React from "react";
-    import { Alert } from "react-bootstrap-fontawesome";
+    import { Alert, Modal, ModalBody } from "react-bootstrap-fontawesome";
 
     // locals
     import getSDK from "./sdk";
+    import ChooseUser from "./components/ChooseUser";
 
 // types & interfaces
 
@@ -40,6 +39,8 @@ export default class App extends React.Component<iPropsNode, iState> {
 
         super(props);
 
+        // state
+
         this.state = {
             "connected": false,
             "error": null
@@ -50,46 +51,71 @@ export default class App extends React.Component<iPropsNode, iState> {
     public componentDidMount (): void {
 
         this._sdk
-            .on("connected", this._onConnected.bind(this))
-            .on("disconnected", this._onDisconnected.bind(this))
-            .on("error", this._onError.bind(this));
+            .on("connected", this._onConnected)
+            .on("disconnected", this._onDisconnected)
+            .on("error", this._onError);
+
+        this._sdk.connect();
 
     }
 
     public componentWillUnmount (): void {
 
         this._sdk
-            .off("connected", this._onConnected.bind(this))
-            .off("disconnected", this._onDisconnected.bind(this))
-            .off("error", this._onError.bind(this));
+            .off("connected", this._onConnected)
+            .off("disconnected", this._onDisconnected)
+            .off("error", this._onError);
+
+        this._sdk.disconnect();
 
     }
 
-    // handlers
+    // sdk events
 
-    private _onConnected (): void {
+    private readonly _onConnected = (): void => {
 
         this.setState({
             "connected": true
         });
 
-    }
+    };
 
-    private _onDisconnected (): void {
+    private readonly _onDisconnected = (): void => {
 
         this.setState({
             "connected": false
         });
 
-    }
+    };
 
-    private _onError (err: Error | null): void {
+    private readonly _onError = (err: Error | null): void => {
 
         this.setState({
             "error": err
         });
 
-    }
+    };
+
+    // interface handlers
+
+    private readonly _handleCloseError = (e: React.MouseEvent<HTMLButtonElement>): void => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.setState({
+            "error": null
+        });
+
+    };
+
+    private readonly _handleError = (err: Error): void => {
+
+        this.setState({
+            "error": err
+        });
+
+    };
 
     // render
 
@@ -102,16 +128,19 @@ export default class App extends React.Component<iPropsNode, iState> {
             </div>;
 
         }
-        else if (this.state.error) {
-
-            return <div className="container">
-                <Alert variant="danger">{ this.state.error.message || "An error occurred" }</Alert>
-            </div>;
-
-        }
         else {
 
-            return <span>Hello World !</span>;
+            return <div className="container-fluid">
+
+                { this.state.error && <Modal appId="{{plugin.name}}-app" title="Error" variant="danger" centered size="sm" onClose={ this._handleCloseError }>
+                    <ModalBody>
+                        { this.state.error.message || "An error occurred" }
+                    </ModalBody>
+                </Modal> }
+
+                <ChooseUser onError={ this._handleError } />
+
+            </div>;
 
         }
 

@@ -22,7 +22,7 @@
 						}
 					},
 					"default": {
-						"description": "An error occured",
+						"description": "An error occurred",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -52,7 +52,7 @@
 						}
 					},
 					"default": {
-						"description": "An error occured",
+						"description": "An error occurred",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -82,7 +82,7 @@
 						}
 					},
 					"default": {
-						"description": "An error occured",
+						"description": "An error occurred",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -111,7 +111,7 @@
 						}
 					},
 					"default": {
-						"description": "An error occured",
+						"description": "An error occurred",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -134,13 +134,206 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "object"
+									"type": "object",
+									"additionalProperties": true
 								}
 							}
 						}
 					},
 					"default": {
-						"description": "An error occured",
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+
+		"/mia-deps-checker/api/users": {
+			"get": {
+				"description": "",
+				"summary": "Get all registered users",
+				"operationId": "getUsers",
+				"responses": {
+					"200": {
+						"description": "Users",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"description": "",
+				"summary": "Add a user",
+				"operationId": "addUser",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User added",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"description": "",
+				"summary": "Delete a user",
+				"operationId": "deleteUser",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User added",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/api/repositories/{user}": {
+			"get": {
+				"description": "",
+				"summary": "Get all repositories by user",
+				"operationId": "getRepositoriesByUser",
+				"parameters": [
+					{
+						"name": "user",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Repositories",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"description": "List of repositories",
+									"items": {
+										"$ref": "#/components/schemas/Repository"
+									}
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/api/analyze": {
+			"post": {
+				"description": "",
+				"summary": "Analyze a package's dependencies",
+				"operationId": "analyzePackage",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"description": "Package URL",
+								"properties": {
+									"package_url": {
+										"type": "string"
+									}
+								},
+								"required": [ "package_url" ]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Analyze result",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Analyze"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -183,7 +376,7 @@
 					"html_url": {
 						"type": "string"
 					},
-					"raw_package": {
+					"package_url": {
 						"type": "string"
 					},
 					"archived": {
@@ -198,17 +391,54 @@
 					"watchers_count": {
 						"type": "number"
 					},
-					"open_issues": {
-						"type": "number"
-					},
 					"open_issues_count": {
-						"type": "number"
-					},
-					"watchers": {
 						"type": "number"
 					}
 				},
-				"required": [ "name", "full_name", "html_url", "raw_package", "archived", "disabled", "language", "watchers_count", "open_issues", "open_issues_count", "watchers" ]
+				"required": [ "name", "full_name", "html_url", "package_url", "archived", "disabled", "language", "watchers_count", "open_issues_count" ]
+			},
+			"Analyze": {
+				"type": "object",
+				"properties": {
+					"result": {
+						"type": "boolean"
+					},
+					"results": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"version": {
+									"type": "string"
+								},
+								"dev": {
+									"type": "boolean"
+								},
+								"optional": {
+									"type": "boolean"
+								},
+								"path": {
+									"type": "string"
+								},
+								"time": {
+									"type": "string"
+								},
+								"result": {
+									"type": "string",
+									"enum": [ "success", "warning", "fail_patch", "fail_minor", "fail_major" ]
+								},
+								"message": {
+									"type": "string"
+								}
+							},
+							"required": [ "name", "version", "dev", "optional", "path", "time", "result", "message" ]
+						}
+					}
+				},
+				"required": [ "result", "results" ]
 			}
 		}
 	},
