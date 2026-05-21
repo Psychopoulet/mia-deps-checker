@@ -167,7 +167,7 @@
 								"schema": {
 									"type": "array",
 									"items": {
-										"type": "string"
+										"$ref": "#/components/schemas/User"
 									}
 								}
 							}
@@ -194,7 +194,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"type": "string"
+								"$ref": "#/components/schemas/User"
 							}
 						}
 					}
@@ -229,7 +229,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"type": "string"
+								"$ref": "#/components/schemas/User"
 							}
 						}
 					}
@@ -267,7 +267,7 @@
 						"in": "path",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/User"
 						}
 					}
 				],
@@ -349,7 +349,8 @@
 	"components": {
 		"schemas": {
 			"PluginName": {
-				"type": "string"
+				"type": "string",
+				"enum": [ "mia-deps-checker" ]
 			},
 			"Error": {
 				"type": "object",
@@ -363,6 +364,9 @@
 					}
 				},
 				"required": [ "code", "message" ]
+			},
+			"User": {
+				"type": "string"
 			},
 			"Repository": {
 				"type": "object",
