@@ -102,10 +102,66 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     };
 
-    private readonly _handleChangeUsers = (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>, newValue: string[]): void => {
+    private readonly _handleChangeUsers = (e: React.FocusEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>, newValue: string[], oldValue: string[]): void => {
+
+        if (oldValue.length !== newValue.length) { // managed by add & delete methods
+            return;
+        }
 
         this.setState({
             "users": newValue
+        });
+
+    };
+
+    private readonly _handleAddLine = (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>, index: number, newValue: string): void => {
+
+        this.setState({
+            "loading": true
+        });
+
+        this._sdk.addUser(newValue).then((): void => {
+
+            this.setState({
+                "loading": false,
+                "users": [ ...this.state.users, newValue ]
+            });
+
+        }).catch((err: Error): void => {
+
+            this.setState({
+                "loading": false
+            });
+
+            this.props.onError(err);
+
+        });
+
+    };
+
+    private readonly _handleDeleteLine = (e: React.MouseEvent<HTMLButtonElement>, index: number, value: string): void => {
+
+        this.setState({
+            "loading": true
+        });
+
+        this._sdk.deleteUser(value).then((): void => {
+
+            this.setState({
+                "loading": false,
+                "users": this.state.users.filter((user: string): boolean => {
+                    return user !== value;
+                })
+            });
+
+        }).catch((err: Error): void => {
+
+            this.setState({
+                "loading": false
+            });
+
+            this.props.onError(err);
+
         });
 
     };
@@ -152,7 +208,11 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                         { !this.state.loading && <CardBody>
 
-                            <InputArray label="Users" value={ this.state.users } onChange={ this._handleChangeUsers } />
+                            <InputArray label="Users" value={ this.state.users } disabled={ this.state.loading }
+                                onChange={ this._handleChangeUsers }
+                                onAddLine={ this._handleAddLine }
+                                onDeleteLine={ this._handleDeleteLine }
+                            />
 
                         </CardBody> }
 
@@ -179,7 +239,11 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                         <CardBody>
 
-                            <InputArray label="Users" value={ this.state.users } onChange={ this._handleChangeUsers } />
+                            <InputArray label="Users" value={ this.state.users } disabled={ this.state.loading }
+                                onChange={ this._handleChangeUsers }
+                                onAddLine={ this._handleAddLine }
+                                onDeleteLine={ this._handleDeleteLine }
+                            />
 
                         </CardBody>
 

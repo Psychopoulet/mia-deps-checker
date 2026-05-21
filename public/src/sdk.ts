@@ -147,7 +147,7 @@ export class SDK extends EventEmitter<{
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": JSON.stringify({ "user": user })
+            "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
 
             if (!res.ok) {
@@ -164,7 +164,7 @@ export class SDK extends EventEmitter<{
 
             }
 
-            return res.json();
+            return Promise.resolve();
 
         });
 
@@ -179,7 +179,7 @@ export class SDK extends EventEmitter<{
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": JSON.stringify({ "user": user })
+            "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
 
             if (!res.ok) {
@@ -196,7 +196,7 @@ export class SDK extends EventEmitter<{
 
             }
 
-            return res.json();
+            return Promise.resolve();
 
         });
 
