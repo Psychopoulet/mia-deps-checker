@@ -5,4 +5,4 @@
 
 // module
 
-export default class ServerTemplate extends Server {}
+export default class ServerMiaDepsChecker extends Server {

@@ -22,9 +22,10 @@
 
 // module
 
-export default class MediatorTemplate extends Mediator<iEventsMinimal & {
+export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
         "initialized": [ ContainerPattern ];
         "released": [ ContainerPattern ];
+        "error": [ Error ];
     }> {
 
     // attributes

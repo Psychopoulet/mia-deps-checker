@@ -18,7 +18,7 @@
 
 // module
 
-export default class OrchestratorTemplate extends Orchestrator {
+export default class OrchestratorMiaDepsChecker extends Orchestrator {
 
     // constructor
 
