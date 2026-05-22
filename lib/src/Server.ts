@@ -43,7 +43,7 @@ export default class ServerMiaDepsChecker extends Server {
 
     }
 
-    // <events>
+    // events
 
     private readonly _onPluginInitialized = (): void => {
 

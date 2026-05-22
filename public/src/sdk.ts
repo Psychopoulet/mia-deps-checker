@@ -165,21 +165,19 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (!res.ok) {
-
-                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                    res.json().then((content: operations["getUsers"]["responses"]["default"]["content"]["application/json"]): void => {
-                        return reject(new Error(content.message));
-                    }).catch((): void => {
-                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
-                    });
-
-                });
-
+            if (res.ok) {
+                return res.json();
             }
 
-            return res.json();
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["getUsers"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request getUsers has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
 
         });
 
@@ -197,21 +195,19 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
 
-            if (!res.ok) {
-
-                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                    res.json().then((content: operations["addUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                        return reject(new Error(content.message));
-                    }).catch((): void => {
-                        return reject(new Error("Failed to add user: " + res.statusText));
-                    });
-
-                });
-
+            if (res.ok) {
+                return res.json();
             }
 
-            return Promise.resolve();
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["addUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request addUser has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
 
         });
 
@@ -229,21 +225,19 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (!res.ok) {
-
-                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                    res.json().then((content: operations["deleteUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                        return reject(new Error(content.message));
-                    }).catch((): void => {
-                        return reject(new Error("Failed to add user: " + res.statusText));
-                    });
-
-                });
-
+            if (res.ok) {
+                return res.json();
             }
 
-            return Promise.resolve();
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["deleteUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request deleteUser has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
 
         });
 
@@ -259,21 +253,19 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (!res.ok) {
-
-                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                    res.json().then((content: operations["getRepositoriesByUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                        return reject(new Error(content.message));
-                    }).catch((): void => {
-                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
-                    });
-
-                });
-
+            if (res.ok) {
+                return res.json();
             }
 
-            return res.json();
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["getRepositoriesByUser"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request getRepositoriesByUser has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
 
         });
 
@@ -293,21 +285,19 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify({ "package_url": packageUrl })
         }).then((res: Response): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (!res.ok) {
-
-                return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                    res.json().then((content: operations["analyzePackage"]["responses"]["default"]["content"]["application/json"]): void => {
-                        return reject(new Error(content.message));
-                    }).catch((): void => {
-                        return reject(new Error("Failed to fetch repositories: " + res.statusText));
-                    });
-
-                });
-
+            if (res.ok) {
+                return res.json();
             }
 
-            return res.json();
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["analyzePackage"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request analyzePackage has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
 
         });
 
