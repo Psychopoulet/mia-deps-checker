@@ -443,6 +443,95 @@
 					}
 				},
 				"required": [ "result", "results" ]
+			},
+			"EventPluginInitialized": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "initialized" ]
+					}
+				},
+				"required": [ "id", "plugin", "command" ]
+			},
+			"EventPluginReleased": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "released" ]
+					}
+				},
+				"required": [ "id", "plugin", "command" ]
+			},
+			"EventPluginError": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "error" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/Error"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
+			},
+			"EventUserAdded": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "add-user" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
+			},
+			"EventUserDeleted": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "delete-user" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
 			}
 		}
 	},

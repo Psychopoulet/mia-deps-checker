@@ -25,7 +25,9 @@
 export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
         "initialized": [ ContainerPattern ];
         "released": [ ContainerPattern ];
-        "error": [ Error ];
+        "error": [ components["schemas"]["EventPluginError"]["data"] ];
+        "add-user": [ components["schemas"]["User"] ];
+        "delete-user": [ components["schemas"]["User"] ];
     }> {
 
     // attributes
@@ -111,7 +113,12 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
             users.push(bodyParams);
             return writeFile(this._dbFile, JSON.stringify(users), "utf-8");
 
+        }).then((): void => {
+
+            this.emit("add-user", bodyParams);
+
         });
+
     }
 
     public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
@@ -124,7 +131,12 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
                 return user !== bodyParams;
             })), "utf-8");
 
+        }).then((): void => {
+
+            this.emit("delete-user", bodyParams);
+
         });
+
     }
 
     public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {

@@ -15,10 +15,11 @@
 
     // locals
     import type { SDK } from "./sdk";
+    import type { components } from "./Descriptor";
 
     interface iState {
         "connected": boolean;
-        "error": Error | null;
+        "error": components["schemas"]["EventPluginError"]["data"] | null;
     }
 
 // component
@@ -88,7 +89,7 @@ export default class App extends React.Component<iPropsNode, iState> {
 
     };
 
-    private readonly _onError = (err: Error | null): void => {
+    private readonly _onError = (err: components["schemas"]["EventPluginError"]["data"] | null): void => {
 
         this.setState({
             "error": err
@@ -112,7 +113,10 @@ export default class App extends React.Component<iPropsNode, iState> {
     private readonly _handleError = (err: Error): void => {
 
         this.setState({
-            "error": err
+            "error": {
+                "code": "unknown",
+                "message": err.message
+            }
         });
 
     };
