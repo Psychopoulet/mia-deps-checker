@@ -63,13 +63,13 @@ export default class ServerMiaDepsChecker extends Server {
 
     };
 
-    private readonly _onAddUser = (data: components["schemas"]["EventUserAdded"]["data"]): void => {
+    private readonly _onAddUser = (data: components["schemas"]["PushEventUserAdded"]["data"]): void => {
 
         this.push("add-user", data);
 
     };
 
-    private readonly _onDeleteUser = (data: components["schemas"]["EventUserAdded"]["data"]): void => {
+    private readonly _onDeleteUser = (data: components["schemas"]["PushEventUserDeleted"]["data"]): void => {
 
         this.push("delete-user", data);
 
