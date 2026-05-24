@@ -23,12 +23,12 @@
 // module
 
 export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
-        "initialized": [ ContainerPattern ];
-        "released": [ ContainerPattern ];
-        "error": [ components["schemas"]["PushEventPluginError"]["data"] ];
-        "add-user": [ components["schemas"]["User"] ];
-        "delete-user": [ components["schemas"]["User"] ];
-    }> {
+    "initialized": [ ContainerPattern ];
+    "released": [ ContainerPattern ];
+    "error": [ components["schemas"]["PushEventPluginError"]["data"] ];
+    "add-user": [ components["schemas"]["User"] ];
+    "delete-user": [ components["schemas"]["User"] ];
+}> {
 
     // attributes
 
