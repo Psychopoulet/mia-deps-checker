@@ -11,7 +11,7 @@
     // locals
     import type { components, paths, operations } from "./Descriptor";
     type tEvents = components["schemas"]["PushEventPluginInitialized"] | components["schemas"]["PushEventPluginReleased"] | components["schemas"]["PushEventPluginError"]
-        | components["schemas"]["EventUserAdded"] | components["schemas"]["EventUserDeleted"];
+        | components["schemas"]["PushEventUserAdded"] | components["schemas"]["PushEventUserDeleted"];
 
     export type tRepository = components["schemas"]["Repository"];
 

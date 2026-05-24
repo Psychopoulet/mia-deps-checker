@@ -505,7 +505,7 @@
 				},
 				"required": [ "id", "plugin", "command", "data" ]
 			},
-			"EventUserAdded": {
+			"PushEventUserAdded": {
 				"type": "object",
 				"properties": {
 					"id": {
@@ -524,7 +524,7 @@
 				},
 				"required": [ "id", "plugin", "command", "data" ]
 			},
-			"EventUserDeleted": {
+			"PushEventUserDeleted": {
 				"type": "object",
 				"properties": {
 					"id": {
