@@ -9,10 +9,20 @@
     type Timeout = ReturnType<typeof setTimeout>;
 
     // locals
-    import type { components, operations, paths } from "./Descriptor";
-    export type tRepository = components["schemas"]["Repository"];
+    import type { components, paths, operations } from "./Descriptor";
     type tEvents = components["schemas"]["PushEventPluginInitialized"] | components["schemas"]["PushEventPluginReleased"] | components["schemas"]["PushEventPluginError"]
         | components["schemas"]["EventUserAdded"] | components["schemas"]["EventUserDeleted"];
+
+    export type tRepository = components["schemas"]["Repository"];
+
+    type NonNeverKeys<T> = {
+        [K in keyof T]: T[K] extends never ? never : K
+    }[keyof T];
+
+    type HttpMethodsOf<P extends keyof paths> = Exclude<
+        NonNeverKeys<paths[P]>,
+        "parameters"
+    >;
 
 // component
 
@@ -53,8 +63,6 @@ export class SDK extends EventEmitter<{
         if (this._reconnectTimeout) {
             return;
         }
-
-        this.emit("connecting");
 
         this._socket = new WebSocket(
             ("https:" === window.location.protocol ? "wss:" : "ws:")
@@ -153,13 +161,78 @@ export class SDK extends EventEmitter<{
 
     }
 
-    // api methods
+    // api
+
+    public getPluginDescriptor (): Promise<operations["getPluginDescriptor"]["responses"]["200"]["content"]["application/json"]> {
+
+        const url: keyof paths = "/mia-deps-checker/api/descriptor";
+        const method: HttpMethodsOf<typeof url> = "get";
+
+        return fetch(url, {
+            "method": method,
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then((res: Response): Promise<operations["getPluginDescriptor"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (res.ok) {
+                return res.json();
+            }
+
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["getPluginDescriptor"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request getPluginDescriptor has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
+
+        });
+
+    }
+
+    public getPluginStatus (): Promise<operations["getPluginStatus"]["responses"]["200"]["content"]["application/json"]> {
+
+        const url: keyof paths = "/mia-deps-checker/api/status";
+        const method: HttpMethodsOf<typeof url> = "get";
+
+        return fetch(url, {
+            "method": method,
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }).then((res: Response): Promise<operations["getPluginStatus"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (res.ok) {
+                return res.json();
+            }
+            else if (404 === res.status) {
+                return Promise.resolve("RELEASED");
+            }
+
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["getPluginStatus"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request getPluginStatus has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
+
+        });
+
+    }
 
     public getUsers (): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/users";
+        const method: HttpMethodsOf<typeof url> = "get";
 
         return fetch(url, {
+            "method": method,
             "headers": {
                 "Content-Type": "application/json"
             }
@@ -186,9 +259,10 @@ export class SDK extends EventEmitter<{
     public addUser (user: operations["addUser"]["requestBody"]["content"]["application/json"]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/users";
+        const method: HttpMethodsOf<typeof url> = "put";
 
         return fetch(url, {
-            "method": "PUT",
+            "method": method,
             "headers": {
                 "Content-Type": "application/json"
             },
@@ -216,9 +290,10 @@ export class SDK extends EventEmitter<{
     public deleteUser (user: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/users";
+        const method: HttpMethodsOf<typeof url> = "delete";
 
         return fetch(url, {
-            "method": "DELETE",
+            "method": method,
             "headers": {
                 "Content-Type": "application/json"
             },
@@ -246,8 +321,10 @@ export class SDK extends EventEmitter<{
     public getRepositoriesByUser (user: operations["getRepositoriesByUser"]["parameters"]["path"]["user"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/repositories/{user}";
+        const method: HttpMethodsOf<typeof url> = "get";
 
         return fetch(url.replace("{user}", user), {
+            "method": method,
             "headers": {
                 "Content-Type": "application/json"
             }
@@ -276,9 +353,10 @@ export class SDK extends EventEmitter<{
     ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/analyze";
+        const method: HttpMethodsOf<typeof url> = "post";
 
         return fetch(url, {
-            "method": "POST",
+            "method": method,
             "headers": {
                 "Content-Type": "application/json"
             },
