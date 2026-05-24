@@ -8,7 +8,7 @@
     } from "react-bootstrap-fontawesome";
 
     // locals
-    import getSDK from "../sdk";
+    import getSDK from "../SDK";
     import Repositories from "./Repositories";
 
 // types & interfaces
@@ -17,7 +17,7 @@
     import type { iPropsNode } from "react-bootstrap-fontawesome";
 
     // locals
-    import type { SDK } from "../sdk";
+    import type { SDK } from "../SDK";
     import type { operations } from "../Descriptor";
 
 // props & state
