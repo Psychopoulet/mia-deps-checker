@@ -59,7 +59,7 @@
   },
 
   "dependencies": {
-    "check-version-modules": "2.4.0",
+    "check-version-modules": "2.5.0",
     "node-pluginsmanager-plugin": "7.1.0"
   },
   "devDependencies": {
@@ -84,7 +84,7 @@
     "ts-loader": "9.5.7",
     "typescript": "5.9.3",
     "used-deps-analyzer": "0.3.0",
-    "webpack": "5.107.1",
+    "webpack": "5.107.2",
     "webpack-cli": "7.0.2"
   },
 
