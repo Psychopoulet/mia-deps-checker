@@ -4,7 +4,7 @@
     import React from "react";
     import {
         Card, CardHeader, CardList, CardFooter,
-        Modal, ModalBody, ModalList,
+        Modal, ModalList,
         ListItem,
         Button
     } from "react-bootstrap-fontawesome";
@@ -30,8 +30,9 @@
 
     interface iState {
         "analyzing": boolean;
-        "analyzeDependenciesResult": components["schemas"]["AnalyzeDependenciesResult"] | null;
-        "analyzeNodeEngineResult": components["schemas"]["AnalyzeNodeEngineResult"] | null;
+        "analyzed": boolean;
+        "analyzeNodeEngineResult": components["schemas"]["AnalyzeNodeEngineResult"];
+        "analyzeDependenciesResult": components["schemas"]["AnalyzeDependenciesResult"];
     }
 
 // component
@@ -52,13 +53,28 @@ export default class Repository extends React.Component<iProps, iState> {
 
         super(props);
 
-        this.state = {
-            "analyzing": false,
-            "analyzeDependenciesResult": null,
-            "analyzeNodeEngineResult": null
-        };
+        this.state = this._resetState();
 
     }
+
+    // private
+
+    private readonly _resetState = (): iState => {
+
+        return {
+            "analyzing": false,
+            "analyzed": false,
+            "analyzeNodeEngineResult": {
+                "result": false,
+                "message": ""
+            },
+            "analyzeDependenciesResult": {
+                "result": false,
+                "results": []
+            }
+        };
+
+    };
 
     // interface handlers
 
@@ -67,10 +83,15 @@ export default class Repository extends React.Component<iProps, iState> {
         e.preventDefault();
         e.stopPropagation();
 
+        if (this.props.repository.archived) {
+            this.props.onAnalyzeError(new Error("Repository is archived"));
+            return;
+        }
+
         this.setState({
+            ...this._resetState(),
             "analyzing": true,
-            "analyzeDependenciesResult": null,
-            "analyzeNodeEngineResult": null
+            "analyzed": false
         });
 
         this._sdk.analyzePackageNodeEngine(this.props.repository.package_url).then((analyzeNodeEngineResult: components["schemas"]["AnalyzeNodeEngineResult"]): Promise<void> => {
@@ -79,6 +100,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
                 this.setState({
                     "analyzing": false,
+                    "analyzed": true,
                     "analyzeNodeEngineResult": analyzeNodeEngineResult,
                     "analyzeDependenciesResult": analyzeDependenciesResult
                 });
@@ -87,9 +109,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
         }).catch((err: Error): void => {
 
-            this.setState({
-                "analyzing": false
-            });
+            this.setState(this._resetState());
 
             this.props.onAnalyzeError(err);
 
@@ -102,10 +122,7 @@ export default class Repository extends React.Component<iProps, iState> {
         e.preventDefault();
         e.stopPropagation();
 
-        this.setState({
-            "analyzeNodeEngineResult": null,
-            "analyzeDependenciesResult": null
-        });
+        this.setState(this._resetState());
 
     };
 
@@ -115,10 +132,10 @@ export default class Repository extends React.Component<iProps, iState> {
 
         let result: "danger" | "warning" | "success" = "success";
 
-        if ((this.state.analyzeNodeEngineResult as components["schemas"]["AnalyzeNodeEngineResult"]).result && (this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).result) {
+        if (this.state.analyzeNodeEngineResult.result && this.state.analyzeDependenciesResult.result) {
             result = "success";
         }
-        else if (!(this.state.analyzeNodeEngineResult as components["schemas"]["AnalyzeNodeEngineResult"]).result && !(this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).result) {
+        else if (!this.state.analyzeNodeEngineResult.result && !this.state.analyzeDependenciesResult.result) {
             result = "danger";
         }
         else {
@@ -127,19 +144,21 @@ export default class Repository extends React.Component<iProps, iState> {
 
         return <>
 
-            { !this.state.analyzing && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
+            { this.state.analyzed && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
                 variant={ result } centered size="lg" scrollable
                 onClose={ this._handleCloseAnalyzeResult }>
 
-                    <ModalBody>
+                    <ModalList>
 
-                        { this.state.analyzeNodeEngineResult?.message }
+                        <ListItem variant={ this.state.analyzeNodeEngineResult.result ? "success" : "danger" }>
+                            { this.state.analyzeNodeEngineResult.message }
+                        </ListItem>
 
-                    </ModalBody>
+                    </ModalList>
 
                     <ModalList>
 
-                        { (this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).results.map((analyzeDependenciesResult): React.JSX.Element => {
+                        { this.state.analyzeDependenciesResult.results.map((analyzeDependenciesResult): React.JSX.Element => {
 
                             let variant: "warning" | "danger" | "info" | "secondary" | null = null;
                             let className: string | null = null;
@@ -194,6 +213,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
                     <Button icon="cog" block
                         title="Analyze"
+                        disabled={ this.props.repository.archived || this.state.analyzing }
                         onClick={ this._handleAnalyze }
                     >
                         Analyze
