@@ -21,7 +21,7 @@ export default function analyzePackageNodeEngine (packageUrl: string): Promise<c
 
         if (
             !isPlainObject(packageContent.engines)
-            || !isPlainObject(packageContent.engines.node)
+            || "undefined" === typeof packageContent.engines.node
         ) {
             throw new Error("No node engine found");
         }
