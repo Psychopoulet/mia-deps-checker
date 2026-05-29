@@ -9,7 +9,8 @@
 
     // locals
     import getRepositoriesByUser from "./utils/getRepositoriesByUser";
-    import analyzePackage from "./utils/analyzePackage";
+    import analyzePackageNodeEngine from "./utils/analyzePackageNodeEngine";
+    import analyzePackageDependencies from "./utils/analyzePackageDependencies";
 
 // types & interfaces
 
@@ -170,12 +171,21 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
     }
 
+    public analyzePackageNodeEngine (
+        urlParams: operations["analyzePackageNodeEngine"]["parameters"],
+        bodyParams: operations["analyzePackageNodeEngine"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["analyzePackageNodeEngine"]["responses"]["200"]["content"]["application/json"]> {
+
+        return analyzePackageNodeEngine(bodyParams.package_url);
+
+    }
+
     public analyzePackageDependencies (
         urlParams: operations["analyzePackageDependencies"]["parameters"],
         bodyParams: operations["analyzePackageDependencies"]["requestBody"]["content"]["application/json"]
     ): Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]> {
 
-        return analyzePackage(bodyParams.package_url);
+        return analyzePackageDependencies(bodyParams.package_url);
 
     }
 
