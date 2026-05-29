@@ -176,6 +176,7 @@
 							"application/json": {
 								"schema": {
 									"type": "array",
+									"uniqueItems": true,
 									"items": {
 										"$ref": "#/components/schemas/User"
 									}
@@ -474,6 +475,7 @@
 					},
 					"results": {
 						"type": "array",
+						"uniqueItems": true,
 						"items": {
 							"type": "object",
 							"properties": {
