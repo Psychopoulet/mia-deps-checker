@@ -213,9 +213,7 @@
 					"201": {
 						"description": "User added",
 						"content": {
-							"application/json": {
-								"schema": {}
-							}
+							"application/json": {}
 						}
 					},
 					"default": {
@@ -248,9 +246,7 @@
 					"200": {
 						"description": "User added",
 						"content": {
-							"application/json": {
-								"schema": {}
-							}
+							"application/json": {}
 						}
 					},
 					"default": {
@@ -309,11 +305,11 @@
 				}
 			}
 		},
-		"/mia-deps-checker/api/analyze": {
+		"/mia-deps-checker/api/analyze/node-engine": {
 			"post": {
 				"description": "",
-				"summary": "Analyze a package's dependencies",
-				"operationId": "analyzePackage",
+				"summary": "Analyze a package's node engine",
+				"operationId": "analyzePackageNodeEngine",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -337,7 +333,53 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Analyze"
+									"$ref": "#/components/schemas/AnalyzeNodeEngineResult"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "An error occurred",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/mia-deps-checker/api/analyze/dependencies": {
+			"post": {
+				"description": "",
+				"summary": "Analyze a package's dependencies",
+				"operationId": "analyzePackageDependencies",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"description": "Package URL",
+								"properties": {
+									"package_url": {
+										"type": "string"
+									}
+								},
+								"required": [ "package_url" ]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Analyze result",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AnalyzeDependenciesResult"
 								}
 							}
 						}
@@ -411,7 +453,19 @@
 				},
 				"required": [ "name", "full_name", "html_url", "package_url", "archived", "disabled", "language", "watchers_count", "open_issues_count" ]
 			},
-			"Analyze": {
+			"AnalyzeNodeEngineResult": {
+				"type": "object",
+				"properties": {
+					"result": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [ "result", "message" ]
+			},
+			"AnalyzeDependenciesResult": {
 				"type": "object",
 				"properties": {
 					"result": {
