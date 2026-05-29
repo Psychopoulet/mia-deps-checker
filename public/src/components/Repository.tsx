@@ -4,7 +4,7 @@
     import React from "react";
     import {
         Card, CardHeader, CardList, CardFooter,
-        Modal, ModalList,
+        Modal, ModalBody, ModalList,
         ListItem,
         Button
     } from "react-bootstrap-fontawesome";
@@ -30,7 +30,8 @@
 
     interface iState {
         "analyzing": boolean;
-        "analyzeResult": components["schemas"]["Analyze"] | null;
+        "analyzeDependenciesResult": components["schemas"]["AnalyzeDependenciesResult"] | null;
+        "analyzeNodeEngineResult": components["schemas"]["AnalyzeNodeEngineResult"] | null;
     }
 
 // component
@@ -53,7 +54,8 @@ export default class Repository extends React.Component<iProps, iState> {
 
         this.state = {
             "analyzing": false,
-            "analyzeResult": null
+            "analyzeDependenciesResult": null,
+            "analyzeNodeEngineResult": null
         };
 
     }
@@ -66,14 +68,21 @@ export default class Repository extends React.Component<iProps, iState> {
         e.stopPropagation();
 
         this.setState({
-            "analyzing": true
+            "analyzing": true,
+            "analyzeDependenciesResult": null,
+            "analyzeNodeEngineResult": null
         });
 
-        this._sdk.analyzePackage(this.props.repository.package_url).then((content: components["schemas"]["Analyze"]): void => {
+        this._sdk.analyzePackageNodeEngine(this.props.repository.package_url).then((analyzeNodeEngineResult: components["schemas"]["AnalyzeNodeEngineResult"]): Promise<void> => {
 
-            this.setState({
-                "analyzing": false,
-                "analyzeResult": content
+            return this._sdk.analyzePackageDependencies(this.props.repository.package_url).then((analyzeDependenciesResult: components["schemas"]["AnalyzeDependenciesResult"]): void => {
+
+                this.setState({
+                    "analyzing": false,
+                    "analyzeNodeEngineResult": analyzeNodeEngineResult,
+                    "analyzeDependenciesResult": analyzeDependenciesResult
+                });
+
             });
 
         }).catch((err: Error): void => {
@@ -94,7 +103,8 @@ export default class Repository extends React.Component<iProps, iState> {
         e.stopPropagation();
 
         this.setState({
-            "analyzeResult": null
+            "analyzeNodeEngineResult": null,
+            "analyzeDependenciesResult": null
         });
 
     };
@@ -103,37 +113,55 @@ export default class Repository extends React.Component<iProps, iState> {
 
     public render (): React.JSX.Element {
 
+        let result: "danger" | "warning" | "success" = "success";
+
+        if ((this.state.analyzeNodeEngineResult as components["schemas"]["AnalyzeNodeEngineResult"]).result && (this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).result) {
+            result = "success";
+        }
+        else if (!(this.state.analyzeNodeEngineResult as components["schemas"]["AnalyzeNodeEngineResult"]).result && !(this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).result) {
+            result = "danger";
+        }
+        else {
+            result = "warning";
+        }
+
         return <>
 
-            { this.state.analyzeResult && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
-                variant={ this.state.analyzeResult.result ? "success" : "warning" } centered size="lg" scrollable
+            { !this.state.analyzing && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
+                variant={ result } centered size="lg" scrollable
                 onClose={ this._handleCloseAnalyzeResult }>
+
+                    <ModalBody>
+
+                        { this.state.analyzeNodeEngineResult?.message }
+
+                    </ModalBody>
 
                     <ModalList>
 
-                        { this.state.analyzeResult.results.map((result): React.JSX.Element => {
+                        { (this.state.analyzeDependenciesResult as components["schemas"]["AnalyzeDependenciesResult"]).results.map((analyzeDependenciesResult): React.JSX.Element => {
 
                             let variant: "warning" | "danger" | "info" | "secondary" | null = null;
                             let className: string | null = null;
 
-                            if ("warning" === result.result) {
+                            if ("warning" === analyzeDependenciesResult.result) {
                                 variant = "secondary";
                             }
-                            else if ("fail_major" === result.result) {
+                            else if ("fail_major" === analyzeDependenciesResult.result) {
                                 variant = "danger";
                             }
-                            else if ("fail_minor" === result.result) {
+                            else if ("fail_minor" === analyzeDependenciesResult.result) {
                                 className = "text-danger";
                             }
-                            else if ("fail_patch" === result.result) {
+                            else if ("fail_patch" === analyzeDependenciesResult.result) {
                                 variant = "warning";
                             }
                             else {
                                 variant = null;
                             }
 
-                            return <ListItem key={ result.name } className={ className ?? undefined } variant={ variant ?? undefined } justify>
-                                { result.name } { "success" !== result.result && <span className="text-muted">{ result.message }</span> }
+                            return <ListItem key={ analyzeDependenciesResult.name } className={ className ?? undefined } variant={ variant ?? undefined } justify>
+                                { analyzeDependenciesResult.name } { "success" !== analyzeDependenciesResult.result && <span className="text-muted">{ analyzeDependenciesResult.message }</span> }
                             </ListItem>;
 
                         }) }
