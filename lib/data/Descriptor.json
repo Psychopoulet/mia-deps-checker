@@ -284,6 +284,7 @@
 							"application/json": {
 								"schema": {
 									"type": "array",
+									"uniqueItems": true,
 									"description": "List of repositories",
 									"items": {
 										"$ref": "#/components/schemas/Repository"

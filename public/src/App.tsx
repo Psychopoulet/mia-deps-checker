@@ -106,7 +106,7 @@ export default class App extends React.Component<iPropsNode, iState> {
 
     };
 
-    private readonly _onError = (data: components["schemas"]["PushEventPluginError"]["data"] | null): void => {
+    private readonly _onError = (data: components["schemas"]["PushEventPluginError"]["data"]): void => {
 
         this.setState({
             "error": data
