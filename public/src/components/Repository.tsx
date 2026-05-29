@@ -30,7 +30,9 @@
 
     interface iState {
         "analyzing": boolean;
-        "analyzeResult": components["schemas"]["Analyze"] | null;
+        "analyzed": boolean;
+        "analyzeNodeEngineResult": components["schemas"]["AnalyzeNodeEngineResult"];
+        "analyzeDependenciesResult": components["schemas"]["AnalyzeDependenciesResult"];
     }
 
 // component
@@ -51,12 +53,28 @@ export default class Repository extends React.Component<iProps, iState> {
 
         super(props);
 
-        this.state = {
-            "analyzing": false,
-            "analyzeResult": null
-        };
+        this.state = this._resetState();
 
     }
+
+    // private
+
+    private readonly _resetState = (): iState => {
+
+        return {
+            "analyzing": false,
+            "analyzed": false,
+            "analyzeNodeEngineResult": {
+                "result": false,
+                "message": ""
+            },
+            "analyzeDependenciesResult": {
+                "result": false,
+                "results": []
+            }
+        };
+
+    };
 
     // interface handlers
 
@@ -65,22 +83,33 @@ export default class Repository extends React.Component<iProps, iState> {
         e.preventDefault();
         e.stopPropagation();
 
+        if (this.props.repository.archived) {
+            this.props.onAnalyzeError(new Error("Repository is archived"));
+            return;
+        }
+
         this.setState({
-            "analyzing": true
+            ...this._resetState(),
+            "analyzing": true,
+            "analyzed": false
         });
 
-        this._sdk.analyzePackage(this.props.repository.package_url).then((content: components["schemas"]["Analyze"]): void => {
+        this._sdk.analyzePackageNodeEngine(this.props.repository.package_url).then((analyzeNodeEngineResult: components["schemas"]["AnalyzeNodeEngineResult"]): Promise<void> => {
 
-            this.setState({
-                "analyzing": false,
-                "analyzeResult": content
+            return this._sdk.analyzePackageDependencies(this.props.repository.package_url).then((analyzeDependenciesResult: components["schemas"]["AnalyzeDependenciesResult"]): void => {
+
+                this.setState({
+                    "analyzing": false,
+                    "analyzed": true,
+                    "analyzeNodeEngineResult": analyzeNodeEngineResult,
+                    "analyzeDependenciesResult": analyzeDependenciesResult
+                });
+
             });
 
         }).catch((err: Error): void => {
 
-            this.setState({
-                "analyzing": false
-            });
+            this.setState(this._resetState());
 
             this.props.onAnalyzeError(err);
 
@@ -93,9 +122,7 @@ export default class Repository extends React.Component<iProps, iState> {
         e.preventDefault();
         e.stopPropagation();
 
-        this.setState({
-            "analyzeResult": null
-        });
+        this.setState(this._resetState());
 
     };
 
@@ -103,37 +130,57 @@ export default class Repository extends React.Component<iProps, iState> {
 
     public render (): React.JSX.Element {
 
+        let result: "danger" | "warning" | "success" = "success";
+
+        if (this.state.analyzeNodeEngineResult.result && this.state.analyzeDependenciesResult.result) {
+            result = "success";
+        }
+        else if (!this.state.analyzeNodeEngineResult.result && !this.state.analyzeDependenciesResult.result) {
+            result = "danger";
+        }
+        else {
+            result = "warning";
+        }
+
         return <>
 
-            { this.state.analyzeResult && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
-                variant={ this.state.analyzeResult.result ? "success" : "warning" } centered size="lg" scrollable
+            { this.state.analyzed && <Modal appId="{{plugin.name}}-app" title={ "Analyze of " + this.props.repository.name }
+                variant={ result } centered size="lg" scrollable
                 onClose={ this._handleCloseAnalyzeResult }>
 
                     <ModalList>
 
-                        { this.state.analyzeResult.results.map((result): React.JSX.Element => {
+                        <ListItem variant={ this.state.analyzeNodeEngineResult.result ? "success" : "danger" }>
+                            { this.state.analyzeNodeEngineResult.message }
+                        </ListItem>
+
+                    </ModalList>
+
+                    <ModalList>
+
+                        { this.state.analyzeDependenciesResult.results.map((analyzeDependenciesResult): React.JSX.Element => {
 
                             let variant: "warning" | "danger" | "info" | "secondary" | null = null;
                             let className: string | null = null;
 
-                            if ("warning" === result.result) {
+                            if ("warning" === analyzeDependenciesResult.result) {
                                 variant = "secondary";
                             }
-                            else if ("fail_major" === result.result) {
+                            else if ("fail_major" === analyzeDependenciesResult.result) {
                                 variant = "danger";
                             }
-                            else if ("fail_minor" === result.result) {
+                            else if ("fail_minor" === analyzeDependenciesResult.result) {
                                 className = "text-danger";
                             }
-                            else if ("fail_patch" === result.result) {
+                            else if ("fail_patch" === analyzeDependenciesResult.result) {
                                 variant = "warning";
                             }
                             else {
                                 variant = null;
                             }
 
-                            return <ListItem key={ result.name } className={ className ?? undefined } variant={ variant ?? undefined } justify>
-                                { result.name } { "success" !== result.result && <span className="text-muted">{ result.message }</span> }
+                            return <ListItem key={ analyzeDependenciesResult.name } className={ className ?? undefined } variant={ variant ?? undefined } justify>
+                                { analyzeDependenciesResult.name } { "success" !== analyzeDependenciesResult.result && <span className="text-muted">{ analyzeDependenciesResult.message }</span> }
                             </ListItem>;
 
                         }) }
@@ -166,6 +213,7 @@ export default class Repository extends React.Component<iProps, iState> {
 
                     <Button icon="cog" block
                         title="Analyze"
+                        disabled={ this.props.repository.archived || this.state.analyzing }
                         onClick={ this._handleAnalyze }
                     >
                         Analyze

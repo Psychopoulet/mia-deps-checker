@@ -348,11 +348,11 @@ export class SDK extends EventEmitter<{
 
     }
 
-    public analyzePackage (
-        packageUrl: operations["analyzePackage"]["requestBody"]["content"]["application/json"]["package_url"]
-    ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
+    public analyzePackageNodeEngine (
+        packageUrl: operations["analyzePackageNodeEngine"]["requestBody"]["content"]["application/json"]["package_url"]
+    ): Promise<operations["analyzePackageNodeEngine"]["responses"]["200"]["content"]["application/json"]> {
 
-        const url: keyof paths = "/mia-deps-checker/api/analyze";
+        const url: keyof paths = "/mia-deps-checker/api/analyze/node-engine";
         const method: HttpMethodsOf<typeof url> = "post";
 
         return fetch(url, {
@@ -361,7 +361,7 @@ export class SDK extends EventEmitter<{
                 "Content-Type": "application/json"
             },
             "body": JSON.stringify({ "package_url": packageUrl })
-        }).then((res: Response): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> => {
+        }).then((res: Response): Promise<operations["analyzePackageNodeEngine"]["responses"]["200"]["content"]["application/json"]> => {
 
             if (res.ok) {
                 return res.json();
@@ -369,10 +369,43 @@ export class SDK extends EventEmitter<{
 
             return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
 
-                res.json().then((content: operations["analyzePackage"]["responses"]["default"]["content"]["application/json"]): void => {
+                res.json().then((content: operations["analyzePackageNodeEngine"]["responses"]["default"]["content"]["application/json"]): void => {
                     return reject(new Error(content.message));
                 }).catch((): void => {
-                    return reject(new Error("Problem with request analyzePackage has status '" + res.status + "' (" + res.statusText + ")"));
+                    return reject(new Error("Problem with request analyzePackageNodeEngine has status '" + res.status + "' (" + res.statusText + ")"));
+                });
+
+            });
+
+        });
+
+    }
+
+    public analyzePackageDependencies (
+        packageUrl: operations["analyzePackageDependencies"]["requestBody"]["content"]["application/json"]["package_url"]
+    ): Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]> {
+
+        const url: keyof paths = "/mia-deps-checker/api/analyze/dependencies";
+        const method: HttpMethodsOf<typeof url> = "post";
+
+        return fetch(url, {
+            "method": method,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({ "package_url": packageUrl })
+        }).then((res: Response): Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]> => {
+
+            if (res.ok) {
+                return res.json();
+            }
+
+            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+                res.json().then((content: operations["analyzePackageDependencies"]["responses"]["default"]["content"]["application/json"]): void => {
+                    return reject(new Error(content.message));
+                }).catch((): void => {
+                    return reject(new Error("Problem with request analyzePackageDependencies has status '" + res.status + "' (" + res.statusText + ")"));
                 });
 
             });
