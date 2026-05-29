@@ -170,10 +170,10 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
     }
 
-    public analyzePackage (
-        urlParams: operations["analyzePackage"]["parameters"],
-        bodyParams: operations["analyzePackage"]["requestBody"]["content"]["application/json"]
-    ): Promise<operations["analyzePackage"]["responses"]["200"]["content"]["application/json"]> {
+    public analyzePackageDependencies (
+        urlParams: operations["analyzePackageDependencies"]["parameters"],
+        bodyParams: operations["analyzePackageDependencies"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]> {
 
         return analyzePackage(bodyParams.package_url);
 
