@@ -21,9 +21,9 @@ export default function analyzePackageNodeEngine (packageUrl: string): Promise<c
 
         if (
             !isPlainObject(packageContent.engines)
-            && !isPlainObject(packageContent.engines.node)
+            || !isPlainObject(packageContent.engines.node)
         ) {
-            throw new Error("No dependency found");
+            throw new Error("No node engine found");
         }
 
         return new Promise((resolve: (result: components["schemas"]["AnalyzeNodeEngineResult"]) => void): void => {
