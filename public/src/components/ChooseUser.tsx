@@ -192,7 +192,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
         if ("" === this.state["selected-user"].trim()) {
 
-            return <div className="row justify-content-md-center mt-3">
+            return <div className="row justify-content-md-center">
 
                 <div className="col-12 col-md-6">
 
@@ -225,7 +225,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
         }
         else {
 
-            return <div className="row mt-3">
+            return <div className="row">
 
                 <div className="col-12 col-md-6 col-lg-4 col-xl-3">
 
