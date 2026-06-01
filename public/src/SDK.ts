@@ -15,14 +15,11 @@
 
     export type tRepository = components["schemas"]["Repository"];
 
-    type NonNeverKeys<T> = {
-        [K in keyof T]: T[K] extends never ? never : K
-    }[keyof T];
-
-    type HttpMethodsOf<P extends keyof paths> = Exclude<
-        NonNeverKeys<paths[P]>,
-        "parameters"
-    >;
+    type HttpMethodsOf<P extends keyof paths> = {
+        [M in keyof paths[P]]: paths[P][M] extends { "responses": unknown }
+            ? M
+            : never;
+    }[keyof paths[P]];
 
 // component
 
