@@ -2,7 +2,8 @@
 	"openapi": "3.0.2",
 	"info": {
 		"title": "mia-deps-checker",
-		"version": "1.4.0"
+		"version": "1.4.1",
+		"description": "Check versions of node repos dependencies."
 	},
 	"paths": {
 		"/mia-deps-checker/api/descriptor": {
