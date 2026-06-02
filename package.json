@@ -1,7 +1,7 @@
 {
 
   "name": "mia-deps-checker",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Check versions of node repos dependencies.",
 
   "type": "commonjs",
