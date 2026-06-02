@@ -80,7 +80,7 @@ export class SDK extends EventEmitter<{
             res.json().then((content: components["schemas"]["Error"]): void => {
                 return reject(new Error(content.message));
             }).catch((): void => {
-                return reject(new Error("Problem with request getPluginStatus has status '" + res.status + "' (" + res.statusText + ")"));
+                return reject(new Error("Problem with request, has status '" + res.status + "' (" + res.statusText + ")"));
             });
 
         });
