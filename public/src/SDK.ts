@@ -49,6 +49,44 @@ export class SDK extends EventEmitter<{
 
     }
 
+    // protected methods
+
+    protected _parseResponse (res: Response): Promise<unknown> {
+
+        if (res.ok) {
+
+            return new Promise((resolve: (content: unknown) => void, reject: (error: Error) => void): void => {
+
+                res.text().then((content: string): void => {
+
+                    try {
+                        return resolve(JSON.parse(content));
+                    }
+                    catch (e: unknown) { // eslint-disable-line @typescript-eslint/no-unused-vars
+                        return resolve(content);
+                    }
+
+                }).catch((err: Error): void => {
+                    console.warn(err);
+                    return reject(new Error("Impossible to parse response"));
+                });
+
+            });
+
+        }
+
+        return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
+
+            res.json().then((content: components["schemas"]["Error"]): void => {
+                return reject(new Error(content.message));
+            }).catch((): void => {
+                return reject(new Error("Problem with request getPluginStatus has status '" + res.status + "' (" + res.statusText + ")"));
+            });
+
+        });
+
+    }
+
     // public methods
 
     public connect (): void {
@@ -104,8 +142,7 @@ export class SDK extends EventEmitter<{
 
             const parsedMessage: tEvents = JSON.parse(event.data) as tEvents;
 
-            // must disable the rule because the plugin name can be sended by another plugin
-            if ("mia-deps-checker" === parsedMessage.plugin) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+            if ("mia-deps-checker" === parsedMessage.plugin as string) { // must be forced string type to avoid useless type error
 
                 switch (parsedMessage.command) {
 
@@ -172,19 +209,7 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getPluginDescriptor"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["getPluginDescriptor"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request getPluginDescriptor has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["getPluginDescriptor"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
@@ -202,22 +227,11 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getPluginStatus"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-            else if (404 === res.status) {
+            if (404 === res.status) {
                 return Promise.resolve("RELEASED");
             }
 
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["getPluginStatus"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request getPluginStatus has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["getPluginStatus"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
@@ -235,19 +249,7 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["getUsers"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request getUsers has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["getUsers"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
@@ -266,19 +268,7 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["addUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request addUser has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res);
 
         });
 
@@ -297,19 +287,7 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify(user)
         }).then((res: Response): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["deleteUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request deleteUser has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res);
 
         });
 
@@ -327,19 +305,7 @@ export class SDK extends EventEmitter<{
             }
         }).then((res: Response): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["getRepositoriesByUser"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request getRepositoriesByUser has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
@@ -360,19 +326,7 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify({ "package_url": packageUrl })
         }).then((res: Response): Promise<operations["analyzePackageNodeEngine"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["analyzePackageNodeEngine"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request analyzePackageNodeEngine has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["analyzePackageNodeEngine"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
@@ -393,19 +347,7 @@ export class SDK extends EventEmitter<{
             "body": JSON.stringify({ "package_url": packageUrl })
         }).then((res: Response): Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]> => {
 
-            if (res.ok) {
-                return res.json();
-            }
-
-            return new Promise((resolve: unknown, reject: (error: Error) => void): void => {
-
-                res.json().then((content: operations["analyzePackageDependencies"]["responses"]["default"]["content"]["application/json"]): void => {
-                    return reject(new Error(content.message));
-                }).catch((): void => {
-                    return reject(new Error("Problem with request analyzePackageDependencies has status '" + res.status + "' (" + res.statusText + ")"));
-                });
-
-            });
+            return this._parseResponse(res) as Promise<operations["analyzePackageDependencies"]["responses"]["200"]["content"]["application/json"]>;
 
         });
 
