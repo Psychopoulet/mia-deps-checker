@@ -142,8 +142,7 @@ export class SDK extends EventEmitter<{
 
             const parsedMessage: tEvents = JSON.parse(event.data) as tEvents;
 
-            // must disable the rule because the plugin name can be sended by another plugin
-            if ("mia-deps-checker" === parsedMessage.plugin) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+            if ("mia-deps-checker" === parsedMessage.plugin as string) { // must be forced string type to avoid useless type error
 
                 switch (parsedMessage.command) {
 
