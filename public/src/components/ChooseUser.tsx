@@ -120,7 +120,9 @@ export default class ChooseUser extends React.Component<iProps, iState> {
             "loading": true
         });
 
-        this._sdk.addUser(newValue).then((): void => {
+        this._sdk.addUser({
+            "user": newValue
+        }).then((): void => {
 
             this.setState({
                 "loading": false,
@@ -145,7 +147,9 @@ export default class ChooseUser extends React.Component<iProps, iState> {
             "loading": true
         });
 
-        this._sdk.deleteUser(value).then((): void => {
+        this._sdk.deleteUser({
+            "user": value
+        }).then((): void => {
 
             this.setState({
                 "loading": false,

@@ -101,46 +101,54 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
     }
 
-    public addUser (urlParams: operations["addUser"]["parameters"], bodyParams: operations["addUser"]["requestBody"]["content"]["application/json"]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
+    public addUser (
+        urlParams: operations["addUser"]["parameters"],
+        bodyParams: operations["addUser"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> {
 
         return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
             return JSON.parse(content) as string[];
         }).then((users: string[]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
 
-            if (users.includes(bodyParams)) {
+            if (users.includes(bodyParams.user)) {
                 return Promise.resolve();
             }
 
-            users.push(bodyParams);
+            users.push(bodyParams.user);
             return writeFile(this._dbFile, JSON.stringify(users), "utf-8");
 
         }).then((): void => {
 
-            this.emit("add-user", bodyParams);
+            this.emit("add-user", bodyParams.user);
 
         });
 
     }
 
-    public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> {
+    public deleteUser (
+        urlParams: operations["deleteUser"]["parameters"],
+        bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]
+    ): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> {
 
         return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
             return JSON.parse(content) as string[];
         }).then((users: string[]): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> => {
 
             return writeFile(this._dbFile, JSON.stringify(users.filter((user: string): boolean => {
-                return user !== bodyParams;
+                return user !== bodyParams.user;
             })), "utf-8");
 
         }).then((): void => {
 
-            this.emit("delete-user", bodyParams);
+            this.emit("delete-user", bodyParams.user);
 
         });
 
     }
 
-    public getRepositoriesByUser (urlParams: operations["getRepositoriesByUser"]["parameters"]): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
+    public getRepositoriesByUser (
+        urlParams: operations["getRepositoriesByUser"]["parameters"]
+    ): Promise<operations["getRepositoriesByUser"]["responses"]["200"]["content"]["application/json"]> {
 
         return getRepositoriesByUser(urlParams.path.user).then((content): Array<components["schemas"]["Repository"]> => {
 

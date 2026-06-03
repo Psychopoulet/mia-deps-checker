@@ -206,7 +206,13 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/User"
+								"type": "object",
+								"properties": {
+									"user": {
+										"$ref": "#/components/schemas/User"
+									}
+								},
+								"required": [ "user" ]
 							}
 						}
 					}
@@ -239,7 +245,13 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/User"
+								"type": "object",
+								"properties": {
+									"user": {
+										"$ref": "#/components/schemas/User"
+									}
+								},
+								"required": [ "user" ]
 							}
 						}
 					}
