@@ -274,7 +274,7 @@ export class SDK extends EventEmitter<{
 
     }
 
-    public deleteUser (user: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
+    public deleteUser (user: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> {
 
         const url: keyof paths = "/mia-deps-checker/api/users";
         const method: HttpMethodsOf<typeof url> = "delete";
@@ -285,7 +285,7 @@ export class SDK extends EventEmitter<{
                 "Content-Type": "application/json"
             },
             "body": JSON.stringify(user)
-        }).then((res: Response): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
+        }).then((res: Response): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> => {
 
             return this._parseResponse(res);
 

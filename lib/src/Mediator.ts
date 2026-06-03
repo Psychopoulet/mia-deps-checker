@@ -122,11 +122,11 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
     }
 
-    public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> {
+    public deleteUser (urlParams: operations["deleteUser"]["parameters"], bodyParams: operations["deleteUser"]["requestBody"]["content"]["application/json"]): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> {
 
         return readFile(this._dbFile, "utf-8").then((content: string): string[] => {
             return JSON.parse(content) as string[];
-        }).then((users: string[]): Promise<operations["deleteUser"]["responses"]["200"]["content"]["application/json"]> => {
+        }).then((users: string[]): Promise<operations["deleteUser"]["responses"]["204"]["content"]["application/json"]> => {
 
             return writeFile(this._dbFile, JSON.stringify(users.filter((user: string): boolean => {
                 return user !== bodyParams;
