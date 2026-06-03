@@ -245,7 +245,7 @@
 					}
 				},
 				"responses": {
-					"200": {
+					"204": {
 						"description": "User added",
 						"content": {
 							"application/json": {}
