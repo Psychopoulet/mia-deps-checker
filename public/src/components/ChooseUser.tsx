@@ -60,6 +60,10 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     public componentDidMount (): void {
 
+        this._sdk
+            .on("added-user", this._onAddedUser)
+            .on("deleted-user", this._onDeletedUser);
+
         this._sdk.getUsers().then((users: operations["getUsers"]["responses"]["200"]["content"]["application/json"]): void => {
 
             this.setState({
@@ -75,6 +79,33 @@ export default class ChooseUser extends React.Component<iProps, iState> {
         });
 
     }
+
+    public componentWillUnmount (): void {
+
+        this._sdk
+            .off("added-user", this._onAddedUser)
+            .off("deleted-user", this._onDeletedUser);
+
+    }
+
+    // sdk events
+
+    private readonly _onAddedUser = (user: string): void => {
+
+        this.setState({
+            "users": [ ...this.state.users, user ]
+        });
+
+    };
+
+    private readonly _onDeletedUser = (user: string): void => {
+
+        this.setState({
+            "users": this.state.users.filter((u: string): boolean => {
+                return u !== user;
+            })
+        });
+    };
 
     // interface handlers
 
@@ -120,11 +151,12 @@ export default class ChooseUser extends React.Component<iProps, iState> {
             "loading": true
         });
 
-        this._sdk.addUser(newValue).then((): void => {
+        this._sdk.addUser({
+            "user": newValue
+        }).then((): void => {
 
             this.setState({
-                "loading": false,
-                "users": [ ...this.state.users, newValue ]
+                "loading": false
             });
 
         }).catch((err: Error): void => {
@@ -145,13 +177,12 @@ export default class ChooseUser extends React.Component<iProps, iState> {
             "loading": true
         });
 
-        this._sdk.deleteUser(value).then((): void => {
+        this._sdk.deleteUser({
+            "user": value
+        }).then((): void => {
 
             this.setState({
-                "loading": false,
-                "users": this.state.users.filter((user: string): boolean => {
-                    return user !== value;
-                })
+                "loading": false
             });
 
         }).catch((err: Error): void => {

@@ -2,7 +2,7 @@
 	"openapi": "3.0.2",
 	"info": {
 		"title": "mia-deps-checker",
-		"version": "1.4.3",
+		"version": "1.5.0",
 		"description": "Check versions of node repos dependencies."
 	},
 	"paths": {
@@ -206,7 +206,13 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/User"
+								"type": "object",
+								"properties": {
+									"user": {
+										"$ref": "#/components/schemas/User"
+									}
+								},
+								"required": [ "user" ]
 							}
 						}
 					}
@@ -239,7 +245,13 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/User"
+								"type": "object",
+								"properties": {
+									"user": {
+										"$ref": "#/components/schemas/User"
+									}
+								},
+								"required": [ "user" ]
 							}
 						}
 					}
@@ -574,7 +586,7 @@
 					},
 					"command": {
 						"type": "string",
-						"enum": [ "add-user" ]
+						"enum": [ "added-user" ]
 					},
 					"data": {
 						"$ref": "#/components/schemas/User"
@@ -593,7 +605,7 @@
 					},
 					"command": {
 						"type": "string",
-						"enum": [ "delete-user" ]
+						"enum": [ "deleted-user" ]
 					},
 					"data": {
 						"$ref": "#/components/schemas/User"
