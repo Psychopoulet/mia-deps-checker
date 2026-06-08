@@ -29,8 +29,8 @@ export class SDK extends EventEmitter<{
     "initialized": [];
     "released": [];
     "error": [ components["schemas"]["PushEventPluginError"]["data"] ];
-    "add-user": [ components["schemas"]["User"] ];
-    "delete-user": [ components["schemas"]["User"] ];
+    "added-user": [ components["schemas"]["User"] ];
+    "deleted-user": [ components["schemas"]["User"] ];
 }> {
 
     // protected
@@ -156,11 +156,11 @@ export class SDK extends EventEmitter<{
                         this.emit("error", parsedMessage.data);
                     break;
 
-                    case "add-user":
-                        this.emit("add-user", parsedMessage.data);
+                    case "added-user":
+                        this.emit("added-user", parsedMessage.data);
                     break;
-                    case "delete-user":
-                        this.emit("delete-user", parsedMessage.data);
+                    case "deleted-user":
+                        this.emit("deleted-user", parsedMessage.data);
                     break;
 
                     default:

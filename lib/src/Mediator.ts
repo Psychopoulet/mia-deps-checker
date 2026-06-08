@@ -27,8 +27,8 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
     "initialized": [ ContainerPattern ];
     "released": [ ContainerPattern ];
     "error": [ components["schemas"]["PushEventPluginError"]["data"] ];
-    "add-user": [ components["schemas"]["User"] ];
-    "delete-user": [ components["schemas"]["User"] ];
+    "added-user": [ components["schemas"]["User"] ];
+    "deleted-user": [ components["schemas"]["User"] ];
 }> {
 
     // attributes
@@ -119,7 +119,7 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
         }).then((): void => {
 
-            this.emit("add-user", bodyParams.user);
+            this.emit("added-user", bodyParams.user);
 
         });
 
@@ -140,7 +140,7 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
 
         }).then((): void => {
 
-            this.emit("delete-user", bodyParams.user);
+            this.emit("deleted-user", bodyParams.user);
 
         });
 

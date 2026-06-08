@@ -586,7 +586,7 @@
 					},
 					"command": {
 						"type": "string",
-						"enum": [ "add-user" ]
+						"enum": [ "added-user" ]
 					},
 					"data": {
 						"$ref": "#/components/schemas/User"
@@ -605,7 +605,7 @@
 					},
 					"command": {
 						"type": "string",
-						"enum": [ "delete-user" ]
+						"enum": [ "deleted-user" ]
 					},
 					"data": {
 						"$ref": "#/components/schemas/User"

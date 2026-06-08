@@ -21,8 +21,8 @@ export default class ServerMiaDepsChecker extends Server {
             .on("released", this._onPluginReleased)
             .on("error", this._onPluginError)
 
-            .on("add-user", this._onAddUser)
-            .on("delete-user", this._onDeleteUser);
+            .on("added-user", this._onAddedUser)
+            .on("deleted-user", this._onDeletedUser);
 
         return Promise.resolve();
 
@@ -36,8 +36,8 @@ export default class ServerMiaDepsChecker extends Server {
             .off("released", this._onPluginReleased)
             .off("error", this._onPluginError)
 
-            .off("add-user", this._onAddUser)
-            .off("delete-user", this._onDeleteUser);
+            .off("added-user", this._onAddedUser)
+            .off("deleted-user", this._onDeletedUser);
 
         return Promise.resolve();
 
@@ -63,15 +63,15 @@ export default class ServerMiaDepsChecker extends Server {
 
     };
 
-    private readonly _onAddUser = (data: components["schemas"]["PushEventUserAdded"]["data"]): void => {
+    private readonly _onAddedUser = (data: components["schemas"]["PushEventUserAdded"]["data"]): void => {
 
-        this.push("add-user", data);
+        this.push("added-user", data);
 
     };
 
-    private readonly _onDeleteUser = (data: components["schemas"]["PushEventUserDeleted"]["data"]): void => {
+    private readonly _onDeletedUser = (data: components["schemas"]["PushEventUserDeleted"]["data"]): void => {
 
-        this.push("delete-user", data);
+        this.push("deleted-user", data);
 
     };
 
