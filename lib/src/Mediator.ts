@@ -5,7 +5,7 @@
     import { join } from "node:path";
 
     // externals
-    import { Mediator, LockedError, NotFoundError } from "node-pluginsmanager-plugin";
+    import { Mediator, ConflictError, NotFoundError } from "node-pluginsmanager-plugin";
 
     // locals
     import getRepositoriesByUser from "./utils/getRepositoriesByUser";
@@ -111,7 +111,7 @@ export default class MediatorMiaDepsChecker extends Mediator<iEventsMinimal & {
         }).then((users: string[]): Promise<operations["addUser"]["responses"]["201"]["content"]["application/json"]> => {
 
             if (users.includes(bodyParams.user)) {
-                return Promise.reject(new LockedError("This user already exists"));
+                return Promise.reject(new ConflictError("This user already exists"));
             }
 
             users.push(bodyParams.user);

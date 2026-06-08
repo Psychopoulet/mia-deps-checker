@@ -61,7 +61,7 @@
   "dependencies": {
     "check-node-engine": "1.1.0",
     "check-version-modules": "2.5.0",
-    "node-pluginsmanager-plugin": "7.3.1"
+    "node-pluginsmanager-plugin": "7.3.2"
   },
   "devDependencies": {
     "@types/express": "5.0.6",
