@@ -61,11 +61,11 @@
   "dependencies": {
     "check-node-engine": "1.1.0",
     "check-version-modules": "2.5.0",
-    "node-pluginsmanager-plugin": "7.3.2"
+    "node-pluginsmanager-plugin": "7.4.0"
   },
   "devDependencies": {
     "@types/express": "5.0.6",
-    "@types/node": "25.9.2",
+    "@types/node": "25.9.3",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/socket.io": "3.0.2",
