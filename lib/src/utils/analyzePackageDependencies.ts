@@ -2,9 +2,9 @@
 
     // externals
     import checkVersionModules from "check-version-modules";
+    import { isPlainObject } from "node-pluginsmanager-plugin";
 
     // locals
-    import isPlainObject from "./isPlainObject";
     import getPackageByUrl from "./getPackageByUrl";
 
 // types & interfaces
