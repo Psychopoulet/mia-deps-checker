@@ -66,9 +66,9 @@ export default class OrchestratorMiaDepsChecker extends Orchestrator {
 
     public uninstall (): Promise<void> {
 
-        return isDirectory(this._externalResourcesDirectory).then((check: boolean): Promise<void> | void => {
+        return isDirectory(this._externalResourcesDirectory).then((check: boolean): Promise<void> => {
 
-            if (check) {
+            if (!check) {
                 return Promise.resolve();
             }
 
