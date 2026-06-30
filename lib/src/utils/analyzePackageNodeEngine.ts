@@ -3,9 +3,7 @@
     // externals
     import checkNodeEngine from "check-node-engine";
     import getPackageByUrl from "./getPackageByUrl";
-
-    // locals
-    import isPlainObject from "./isPlainObject";
+    import { isPlainObject } from "node-pluginsmanager-plugin";
 
 // types & interfaces
 
