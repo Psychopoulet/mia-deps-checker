@@ -105,6 +105,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
                 return u !== user;
             })
         });
+
     };
 
     // interface handlers
