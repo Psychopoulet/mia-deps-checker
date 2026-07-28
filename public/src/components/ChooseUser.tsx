@@ -200,9 +200,16 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
     // render
 
-    private _renderUserSelector (): React.JSX.Element {
+    private _renderUserSelector (): React.JSX.Element | null {
 
-        return <div>
+        if (this.state.loading) {
+            return <CardBody>Loading...</CardBody>;
+        }
+        else if (0 === this.state.users.length) {
+            return null;
+        }
+
+        return <CardBody>
 
             <Select label="Users" value={ this.state["selected-user"] } onChange={ this._handleChooseUser }>
 
@@ -216,7 +223,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
             </Select>
 
-        </div>;
+        </CardBody>;
 
     }
 
@@ -232,11 +239,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                         <CardHeader>Choose a user</CardHeader>
 
-                        <CardBody>
-
-                            { this.state.loading ? "Loading..." : this._renderUserSelector() }
-
-                        </CardBody>
+                        { this._renderUserSelector() }
 
                         { !this.state.loading && <CardBody>
 
@@ -263,11 +266,7 @@ export default class ChooseUser extends React.Component<iProps, iState> {
 
                     <Card>
 
-                        <CardBody>
-
-                            { this._renderUserSelector() }
-
-                        </CardBody>
+                        { this._renderUserSelector() }
 
                         <CardBody>
 

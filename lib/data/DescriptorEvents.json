@@ -1,0 +1,114 @@
+{
+	"openapi": "3.0.2",
+	"info": {
+		"title": "mia-deps-checker - events",
+		"version": "2.0.0",
+		"description": "Check versions of node repos dependencies. Events description.",
+		"license": {
+			"name": "ISC",
+			"url": "https://en.wikipedia.org/wiki/ISC_license"
+		}
+	},
+	"components": {
+		"schemas": {
+            "PluginName": {
+                "$ref": "./Descriptor.json#/components/schemas/PluginName"
+            },
+			"User": {
+				"$ref": "./Descriptor.json#/components/schemas/User"
+			},
+            "Error": {
+                "$ref": "./Descriptor.json#/components/schemas/Error"
+            },
+			"PushEventPluginInitialized": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "initialized" ]
+					}
+				},
+				"required": [ "id", "plugin", "command" ]
+			},
+			"PushEventPluginReleased": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "released" ]
+					}
+				},
+				"required": [ "id", "plugin", "command" ]
+			},
+			"PushEventPluginError": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "error" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/Error"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
+			},
+			"PushEventUserAdded": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "added-user" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
+			},
+			"PushEventUserDeleted": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"plugin": {
+						"$ref": "#/components/schemas/PluginName"
+					},
+					"command": {
+						"type": "string",
+						"enum": [ "deleted-user" ]
+					},
+					"data": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [ "id", "plugin", "command", "data" ]
+			}
+		}
+	}
+}
