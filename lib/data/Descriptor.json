@@ -11,6 +11,9 @@
 				"description": "",
 				"summary": "Plugin's descriptor",
 				"operationId": "getPluginDescriptor",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"responses": {
 					"200": {
 						"description": "Plugin's descriptor",
@@ -40,6 +43,9 @@
 				"description": "",
 				"summary": "Plugin's status",
 				"operationId": "getPluginStatus",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"responses": {
 					"200": {
 						"description": "Plugin's status",
@@ -170,6 +176,9 @@
 				"description": "",
 				"summary": "Get all registered users",
 				"operationId": "getUsers",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"responses": {
 					"200": {
 						"description": "Users",
@@ -201,6 +210,9 @@
 				"description": "",
 				"summary": "Add a user",
 				"operationId": "addUser",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -281,6 +293,9 @@
 				"description": "",
 				"summary": "Get all repositories by user",
 				"operationId": "getRepositoriesByUser",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"parameters": [
 					{
 						"name": "user",
@@ -325,6 +340,9 @@
 				"description": "",
 				"summary": "Analyze a package's node engine",
 				"operationId": "analyzePackageNodeEngine",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -371,6 +389,9 @@
 				"description": "",
 				"summary": "Analyze a package's dependencies",
 				"operationId": "analyzePackageDependencies",
+				"security": [
+					{ "bearerAuth": [] }
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -414,6 +435,13 @@
 		}
 	},
 	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		},
 		"schemas": {
 			"PluginName": {
 				"type": "string",
