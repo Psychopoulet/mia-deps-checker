@@ -40,7 +40,7 @@
 
 function mockDefault (relativePath, fn) {
 
-    const absPath = require.resolve(join(__dirname, "..", "lib", "cjs", relativePath));
+    const absPath = require.resolve(join(__dirname, "..", "lib", "src", relativePath));
 
     require.cache[absPath] = {
         "exports": {
@@ -54,20 +54,20 @@ function mockDefault (relativePath, fn) {
 
 }
 
-mockDefault("utils/getRepositoriesByUser.js", (user) => {
+mockDefault("utils/getRepositoriesByUser.ts", (user) => {
     return repositories.impl(user);
 });
 
-mockDefault("utils/analyzePackageNodeEngine.js", (packageUrl) => {
+mockDefault("utils/analyzePackageNodeEngine.ts", (packageUrl) => {
     return nodeEngine.impl(packageUrl);
 });
 
-mockDefault("utils/analyzePackageDependencies.js", (packageUrl) => {
+mockDefault("utils/analyzePackageDependencies.ts", (packageUrl) => {
     return dependencies.impl(packageUrl);
 });
 
     // locals
-    const Mediator = require("../lib/cjs/Mediator.js").default;
+    const Mediator = require("../lib/src/Mediator.ts").default;
 
 // tests
 
